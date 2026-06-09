@@ -4,7 +4,7 @@ echo   APPU DEPLOYMENT SYSTEM - AUTO SYNCHRONIZER
 echo ==============================================
 echo.
 
-echo [1/3] Compilando TypeScript (TSX -> JSX)...
+echo [1/3] Compilando TypeScript...
 call npx tsc --module esnext --jsx preserve
 if %ERRORLEVEL% neq 0 (
     echo [ERROR] Fallo en la compilacion de TypeScript.
@@ -13,7 +13,7 @@ if %ERRORLEVEL% neq 0 (
 echo [OK] Compilacion exitosa.
 echo.
 
-echo [2/3] Transpilando a HTML compatible (JSX -> HTML)...
+echo [2/3] Transpilando a HTML compatible...
 python transpile.py
 if %ERRORLEVEL% neq 0 (
     echo [ERROR] Fallo en la transpilacion.
