@@ -181,4 +181,9 @@ html_template = f"""<!DOCTYPE html>
 with open(output_path, 'w', encoding='utf-8') as f:
     f.write(html_template)
 
+# Also write to index.html for direct GitHub Pages entry point
+index_path = os.path.join(os.path.dirname(output_path), "index.html")
+with open(index_path, 'w', encoding='utf-8') as f:
+    f.write(html_template)
+
 print("Transpilation and HTML conversion successful!")
