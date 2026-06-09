@@ -1,0 +1,16 @@
+{
+  "name": "concurso-de-becas",
+  "version": "1.0.0",
+  "description": "Simulador de Examen APPU",
+  "main": "simulador_de_examen_appu.tsx",
+  "dependencies": {
+    "firebase": "^10.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "typescript": "^5.0.0"
+  }
+}
