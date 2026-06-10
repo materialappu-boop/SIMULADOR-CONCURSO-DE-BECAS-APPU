@@ -215,7 +215,11 @@ export default function App() {
         name: '',
         school: '',
         grade: '3° de Secundaria',
-        tutor: ''
+        tutor: '',
+        dni: '',
+        phone: '',
+        dataConsent: false,
+        registrationSource: 'simulacro'
     });
     const [showStudentRegisterModal, setShowStudentRegisterModal] = useState(false);
     const [results, setResults] = useState([]);
@@ -450,14 +454,81 @@ export default function App() {
             name: '',
             school: '',
             grade: '3° de Secundaria',
-            tutor: ''
+            tutor: '',
+            dni: '',
+            phone: '',
+            dataConsent: false,
+            registrationSource: 'simulacro'
         });
         setShowStudentRegisterModal(true);
     };
+    const handleRegisterDirect = (source) => {
+        setSelectedExam(null);
+        setStudentForm({
+            name: '',
+            school: '',
+            grade: '3° de Secundaria',
+            tutor: '',
+            dni: '',
+            phone: '',
+            dataConsent: false,
+            registrationSource: source
+        });
+        setShowStudentRegisterModal(true);
+    };
+    const handleExportCSV = () => {
+        if (results.length === 0)
+            return;
+        const headers = ['Estudiante', 'DNI', 'Teléfono', 'Colegio', 'Grado', 'Tutor', 'Examen', 'Puntaje', 'Etiqueta'];
+        const rows = results.map(res => [
+            `"${res.studentName || ''}"`,
+            `"${res.dni || ''}"`,
+            `"${res.phone || ''}"`,
+            `"${res.school || ''}"`,
+            `"${res.grade || ''}"`,
+            `"${res.tutor || ''}"`,
+            `"${res.examName || ''}"`,
+            `"${res.score || ''}"`,
+            `"${res.tag || '-'}"`
+        ]);
+        const csvContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `registro_datos_appu_${new Date().getTime()}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
     const handleStartExamAfterRegister = (e) => {
         e.preventDefault();
-        if (!studentForm.name.trim() || !studentForm.school.trim() || !studentForm.tutor.trim()) {
+        if (!studentForm.name.trim() || !studentForm.school.trim() || !studentForm.tutor.trim() || !studentForm.dni.trim() || !studentForm.phone.trim()) {
             showToast("Por favor, completa todos los campos del formulario.", "warning");
+            return;
+        }
+        if (!studentForm.dataConsent) {
+            showToast("Debes aceptar el Uso de Datos para continuar.", "warning");
+            return;
+        }
+        if (studentForm.registrationSource !== 'simulacro') {
+            const newResult = {
+                id: Date.now().toString(),
+                examId: "N/A",
+                examName: studentForm.registrationSource === 'concurso' ? 'Inscripción: Concurso de Becas' : 'Inscripción: Reforzamiento',
+                studentName: studentForm.name,
+                dni: studentForm.dni,
+                phone: studentForm.phone,
+                school: studentForm.school,
+                grade: studentForm.grade,
+                tutor: studentForm.tutor,
+                score: "N/A",
+                createdAt: new Date().toISOString(),
+                tag: studentForm.registrationSource
+            };
+            setResults((prev) => [...prev, newResult]);
+            setShowStudentRegisterModal(false);
+            showToast("¡Inscripción exitosa! Nos pondremos en contacto contigo.", "success");
             return;
         }
         setShowStudentRegisterModal(false);
@@ -485,6 +556,8 @@ export default function App() {
                 examId: selectedExam?.id || "",
                 examName: selectedExam?.name || "",
                 studentName: studentForm.name,
+                dni: studentForm.dni,
+                phone: studentForm.phone,
                 school: studentForm.school,
                 grade: studentForm.grade,
                 tutor: studentForm.tutor,
@@ -1144,9 +1217,27 @@ export default function App() {
                 </div>
               </div>
 
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider">DNI</label>
+                  <input type="text" placeholder="Ej. 76543210" value={studentForm.dni} onChange={(e) => setStudentForm({ ...studentForm, dni: e.target.value })} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 focus:outline-none text-sm font-semibold text-slate-800" required/>
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider">Teléfono de Contacto</label>
+                  <input type="text" placeholder="Ej. 987654321" value={studentForm.phone} onChange={(e) => setStudentForm({ ...studentForm, phone: e.target.value })} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 focus:outline-none text-sm font-semibold text-slate-800" required/>
+                </div>
+              </div>
+
               <div>
                 <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider">Tutor o Docente a Cargo</label>
                 <input type="text" placeholder="Ej. Prof. Carlos Mendoza" value={studentForm.tutor} onChange={(e) => setStudentForm({ ...studentForm, tutor: e.target.value })} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 focus:outline-none text-sm font-semibold text-slate-800" required/>
+              </div>
+
+              <div className="flex items-start mt-4">
+                <input type="checkbox" id="dataConsent" checked={studentForm.dataConsent} onChange={(e) => setStudentForm({ ...studentForm, dataConsent: e.target.checked })} className="mt-1 h-4 w-4 text-violet-600 focus:ring-violet-500 border-slate-300 rounded" required/>
+                <label htmlFor="dataConsent" className="ml-2 block text-[11px] text-slate-600 leading-tight">
+                  <span className="font-bold">Uso de Datos:</span> Autorizo a APPU a tratar los datos consignados para enviarme informes de resultados, ciclos de interés, asesoría y el seguimiento de sus simulacros. También acepto recibir promociones, descuentos y nuevos inicios de clases por WhatsApp, llamadas o SMS.
+                </label>
               </div>
 
               <div className="flex justify-end space-x-3 pt-4 border-t border-slate-100">
@@ -1345,6 +1436,9 @@ export default function App() {
                 }} className="px-6 py-3 bg-[#ffc000] hover:bg-[#e6ad00] text-[#0f2c59] font-black rounded-full text-xs sm:text-sm uppercase tracking-wider shadow-lg hover:shadow-xl hover:scale-102 transform duration-150 flex items-center space-x-2">
                           <span>📝 EMPEZAR SIMULACRO AHORA</span>
                           <span>→</span>
+                        </button>
+                        <button onClick={() => handleRegisterDirect('concurso')} className="px-6 py-3 bg-[#e1251b] hover:bg-red-700 text-white font-black rounded-full text-xs sm:text-sm uppercase tracking-wider shadow-lg hover:shadow-xl hover:scale-102 transform duration-150 flex items-center space-x-2">
+                          <span>✅ INSCRIBIRME EN EL CONCURSO</span>
                         </button>
 
                       </div>
@@ -1587,6 +1681,13 @@ export default function App() {
                       </div>
                     </div>
 
+                  </div>
+
+                  {/* Botón Inscribirme en el Reforzamiento */}
+                  <div className="flex justify-center mt-6 mb-12">
+                    <button onClick={() => handleRegisterDirect('reforzamiento')} className="px-8 py-3.5 bg-gradient-to-r from-blue-700 via-indigo-600 to-violet-700 hover:from-blue-800 hover:via-indigo-700 hover:to-violet-800 text-white font-black rounded-full text-sm sm:text-base uppercase tracking-wider shadow-xl hover:shadow-2xl hover:scale-105 transform transition duration-300 flex items-center space-x-2">
+                      <span>✨ INSCRIBIRME EN EL REFORZAMIENTO</span>
+                    </button>
                   </div>
 
 
@@ -2152,8 +2253,8 @@ export default function App() {
                   </div>
                   
                   {/* Selector rápido de Tab */}
-                  <div className="flex bg-slate-800 p-1.5 rounded-2xl border border-slate-700">
-                    <button onClick={() => setAdminTab('exams')} className={`px-5 py-2.5 rounded-xl text-sm font-bold transition ${adminTab === 'exams'
+                  <div className="flex bg-slate-800 p-1.5 rounded-2xl border border-slate-700 overflow-x-auto whitespace-nowrap">
+                    <button onClick={() => setAdminTab('exams')} className={`px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition ${adminTab === 'exams'
                     ? 'bg-violet-600 text-white shadow'
                     : 'text-slate-400 hover:text-white'}`}>
                       1. Gestionar Exámenes
@@ -2161,10 +2262,15 @@ export default function App() {
                     <button onClick={() => {
                     setAdminTab('questions');
                     triggerMathJax();
-                }} className={`px-5 py-2.5 rounded-xl text-sm font-bold transition ${adminTab === 'questions'
+                }} className={`px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition ${adminTab === 'questions'
                     ? 'bg-violet-600 text-white shadow'
                     : 'text-slate-400 hover:text-white'}`}>
                       2. Banco de Preguntas
+                    </button>
+                    <button onClick={() => setAdminTab('results')} className={`px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition ${adminTab === 'results'
+                    ? 'bg-violet-600 text-white shadow'
+                    : 'text-slate-400 hover:text-white'}`}>
+                      3. Registros de Datos
                     </button>
                   </div>
                 </div>
@@ -2603,6 +2709,53 @@ export default function App() {
 
                     </div>
 
+                  </div>)}
+
+                {/* ==================== TAB: REGISTROS DE DATOS ==================== */}
+                {adminTab === 'results' && (<div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm overflow-hidden">
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-2 mb-4">
+                      <h3 className="text-lg font-bold text-slate-800">
+                        Registros de Estudiantes y Resultados
+                      </h3>
+                      <button onClick={handleExportCSV} className="px-3 py-1.5 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 rounded-lg text-xs font-bold transition flex items-center space-x-1">
+                        <span>⬇️</span>
+                        <span>Exportar CSV</span>
+                      </button>
+                    </div>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse text-xs sm:text-sm">
+                        <thead>
+                          <tr className="bg-slate-50 border-b border-slate-200 text-[11px] font-black uppercase tracking-wider text-slate-500">
+                            <th className="py-3 px-4">Estudiante</th>
+                            <th className="py-3 px-4">DNI</th>
+                            <th className="py-3 px-4">Teléfono</th>
+                            <th className="py-3 px-4">Colegio</th>
+                            <th className="py-3 px-4">Grado</th>
+                            <th className="py-3 px-4">Tutor</th>
+                            <th className="py-3 px-4">Examen/Registro</th>
+                            <th className="py-3 px-4">Etiqueta</th>
+                            <th className="py-3 px-4 text-right">Puntaje</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
+                          {results.length === 0 ? (<tr>
+                              <td colSpan={8} className="py-8 text-center text-slate-400 italic">No hay registros de datos aún.</td>
+                            </tr>) : (results.map((res) => (<tr key={res.id} className="hover:bg-slate-50 transition">
+                                <td className="py-3 px-4 font-bold text-slate-900">{res.studentName}</td>
+                                <td className="py-3 px-4">{res.dni || '-'}</td>
+                                <td className="py-3 px-4">{res.phone || '-'}</td>
+                                <td className="py-3 px-4">{res.school}</td>
+                                <td className="py-3 px-4">{res.grade}</td>
+                                <td className="py-3 px-4">{res.tutor}</td>
+                                <td className="py-3 px-4 text-[10px] sm:text-xs">{res.examName}</td>
+                                <td className="py-3 px-4 text-[10px] sm:text-xs">
+                                  {res.tag === 'concurso' ? (<span className="px-2 py-0.5 bg-red-100 text-red-800 rounded-full font-bold">Concurso</span>) : res.tag === 'reforzamiento' ? (<span className="px-2 py-0.5 bg-blue-100 text-blue-800 rounded-full font-bold">Reforzamiento</span>) : (<span className="px-2 py-0.5 bg-violet-100 text-violet-800 rounded-full font-bold">Simulacro</span>)}
+                                </td>
+                                <td className="py-3 px-4 text-right font-black text-violet-700">{res.score}{res.score !== 'N/A' ? ' pts' : ''}</td>
+                              </tr>)))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>)}
 
               </div>)}
