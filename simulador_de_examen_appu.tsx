@@ -1819,17 +1819,6 @@ export default function App() {
 
                   </div>
 
-                  {/* Botón Inscribirme en el Reforzamiento */}
-                  <div className="flex justify-center mt-6 mb-12">
-                    <button
-                      onClick={() => handleRegisterDirect('reforzamiento')}
-                      className="px-8 py-3.5 bg-gradient-to-r from-blue-700 via-indigo-600 to-violet-700 hover:from-blue-800 hover:via-indigo-700 hover:to-violet-800 text-white font-black rounded-full text-sm sm:text-base uppercase tracking-wider shadow-xl hover:shadow-2xl hover:scale-105 transform transition duration-300 flex items-center space-x-2"
-                    >
-                      <span>✨ INSCRIBIRME EN EL REFORZAMIENTO</span>
-                    </button>
-                  </div>
-
-
 
                   {/* --- EXÁMENES Y SIMULACROS DISPONIBLES (ESTILO MD3) --- */}
                   <div 
