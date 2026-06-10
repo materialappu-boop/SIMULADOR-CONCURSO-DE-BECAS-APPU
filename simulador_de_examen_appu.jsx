@@ -222,6 +222,7 @@ export default function App() {
         registrationSource: 'simulacro'
     });
     const [showStudentRegisterModal, setShowStudentRegisterModal] = useState(false);
+    const [isStudentRegistered, setIsStudentRegistered] = useState(false);
     const [results, setResults] = useState([]);
     const [activeRankingTab, setActiveRankingTab] = useState('general');
     // --- CARGA DINÁMICA DE MATHJAX ---
@@ -248,6 +249,29 @@ export default function App() {
         return () => {
             document.head.removeChild(script);
         };
+    }, []);
+    // Cargar estado de registro local al montar
+    useEffect(() => {
+        const registered = localStorage.getItem('appu_student_registered') === 'true';
+        setIsStudentRegistered(registered);
+        const savedName = localStorage.getItem('appu_student_name');
+        const savedSchool = localStorage.getItem('appu_student_school');
+        const savedGrade = localStorage.getItem('appu_student_grade');
+        const savedDni = localStorage.getItem('appu_student_dni');
+        const savedPhone = localStorage.getItem('appu_student_phone');
+        const savedTutor = localStorage.getItem('appu_student_tutor');
+        if (savedName || savedSchool || savedDni || savedPhone) {
+            setStudentForm(prev => ({
+                ...prev,
+                name: savedName || '',
+                school: savedSchool || '',
+                grade: savedGrade || '3° de Secundaria',
+                dni: savedDni || '',
+                phone: savedPhone || '',
+                tutor: savedTutor || '',
+                dataConsent: true
+            }));
+        }
     }, []);
     // Función para re-procesar las fórmulas LaTeX en la pantalla actual
     const triggerMathJax = () => {
@@ -450,17 +474,44 @@ export default function App() {
             return;
         }
         setSelectedExam(exam);
-        setStudentForm({
-            name: '',
-            school: '',
-            grade: '3° de Secundaria',
-            tutor: '',
-            dni: '',
-            phone: '',
-            dataConsent: false,
-            registrationSource: 'simulacro'
-        });
-        setShowStudentRegisterModal(true);
+        const registered = localStorage.getItem('appu_student_registered') === 'true';
+        if (registered) {
+            const savedName = localStorage.getItem('appu_student_name') || '';
+            const savedSchool = localStorage.getItem('appu_student_school') || '';
+            const savedGrade = localStorage.getItem('appu_student_grade') || '3° de Secundaria';
+            const savedDni = localStorage.getItem('appu_student_dni') || '';
+            const savedPhone = localStorage.getItem('appu_student_phone') || '';
+            const savedTutor = localStorage.getItem('appu_student_tutor') || '';
+            setStudentForm({
+                name: savedName,
+                school: savedSchool,
+                grade: savedGrade,
+                dni: savedDni,
+                phone: savedPhone,
+                tutor: savedTutor,
+                dataConsent: true,
+                registrationSource: 'simulacro'
+            });
+            setStudentAnswers({});
+            setActiveQuestionIndex(0);
+            setExamFinished(false);
+            setElapsedTime(0);
+            setCurrentView('student-exam');
+            showToast(`¡Bienvenido de nuevo, ${savedName}! Iniciando simulacro.`, "success");
+        }
+        else {
+            setStudentForm({
+                name: '',
+                school: '',
+                grade: '3° de Secundaria',
+                tutor: '',
+                dni: '',
+                phone: '',
+                dataConsent: false,
+                registrationSource: 'simulacro'
+            });
+            setShowStudentRegisterModal(true);
+        }
     };
     const handleRegisterDirect = (source) => {
         setSelectedExam(null);
@@ -501,19 +552,27 @@ export default function App() {
         link.click();
         document.body.removeChild(link);
     };
-    const handleStartExamAfterRegister = (e) => {
+    const handleStartExamAfterRegister = async (e) => {
         e.preventDefault();
-        if (!studentForm.name.trim() || !studentForm.school.trim() || !studentForm.tutor.trim() || !studentForm.dni.trim() || !studentForm.phone.trim()) {
-            showToast("Por favor, completa todos los campos del formulario.", "warning");
+        if (!studentForm.name.trim() || !studentForm.school.trim() || !studentForm.dni.trim() || !studentForm.phone.trim()) {
+            showToast("Por favor, completa todos los campos obligatorios del formulario.", "warning");
             return;
         }
         if (!studentForm.dataConsent) {
             showToast("Debes aceptar el Uso de Datos para continuar.", "warning");
             return;
         }
+        // Guardar registro localmente para otorgar acceso
+        localStorage.setItem('appu_student_registered', 'true');
+        localStorage.setItem('appu_student_name', studentForm.name);
+        localStorage.setItem('appu_student_school', studentForm.school);
+        localStorage.setItem('appu_student_grade', studentForm.grade);
+        localStorage.setItem('appu_student_dni', studentForm.dni);
+        localStorage.setItem('appu_student_phone', studentForm.phone);
+        localStorage.setItem('appu_student_tutor', studentForm.tutor);
+        setIsStudentRegistered(true);
         if (studentForm.registrationSource !== 'simulacro') {
             const newResult = {
-                id: Date.now().toString(),
                 examId: "N/A",
                 examName: studentForm.registrationSource === 'concurso' ? 'Inscripción: Concurso de Becas' : 'Inscripción: Reforzamiento',
                 studentName: studentForm.name,
@@ -526,9 +585,32 @@ export default function App() {
                 createdAt: new Date().toISOString(),
                 tag: studentForm.registrationSource
             };
-            setResults((prev) => [...prev, newResult]);
+            if (isOfflineMode) {
+                const storedResults = localStorage.getItem('appu_results');
+                let updatedResults = [];
+                if (storedResults) {
+                    try {
+                        updatedResults = JSON.parse(storedResults);
+                    }
+                    catch (err) { }
+                }
+                const resultWithId = { id: "res-" + Date.now(), ...newResult };
+                updatedResults.push(resultWithId);
+                localStorage.setItem('appu_results', JSON.stringify(updatedResults));
+                setResults(updatedResults);
+            }
+            else {
+                try {
+                    const resultsCollection = collection(db, 'artifacts', appId, 'public', 'data', 'results');
+                    await addDoc(resultsCollection, newResult);
+                }
+                catch (error) {
+                    console.error("Error al guardar registro:", error);
+                    showToast("No se pudo registrar la inscripción en la base de datos.", "error");
+                }
+            }
             setShowStudentRegisterModal(false);
-            showToast("¡Inscripción exitosa! Nos pondremos en contacto contigo.", "success");
+            showToast("¡Inscripción exitosa! Nos pondremos en contacto contigo y ya tienes acceso a los simulacros.", "success");
             return;
         }
         setShowStudentRegisterModal(false);
@@ -567,7 +649,8 @@ export default function App() {
                 incorrectCount: incorrect,
                 omittedCount: omitted,
                 timeSpent: elapsedTime,
-                createdAt: new Date().toISOString()
+                createdAt: new Date().toISOString(),
+                tag: 'simulacro'
             };
             if (isOfflineMode) {
                 const storedResults = localStorage.getItem('appu_results');
@@ -1187,13 +1270,16 @@ export default function App() {
         </div>)}
 
       {/* --- MODAL DE REGISTRO DE ESTUDIANTE --- */}
-      {showStudentRegisterModal && selectedExam && (<div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm p-4">
+      {showStudentRegisterModal && (<div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm p-4">
           <div className="bg-white rounded-3xl max-w-lg w-full shadow-2xl overflow-hidden p-6 md:p-8 animate-fade-in border border-slate-100">
             <div className="text-center space-y-2 mb-6">
               <span className="text-3xl block">📝</span>
               <h3 className="text-2xl font-black text-slate-900 leading-tight">Registro de Participante</h3>
               <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                Para iniciar el simulacro de <strong className="text-violet-700 font-bold">{selectedExam.name}</strong>, por favor ingresa tus datos.
+                Para {selectedExam ? "iniciar el simulacro de " : "completar tu inscripción en el "}
+                <strong className="text-violet-700 font-bold">
+                  {selectedExam ? selectedExam.name : (studentForm.registrationSource === 'concurso' ? 'Concurso de Becas' : 'Programa de Reforzamiento')}
+                </strong>, por favor ingresa tus datos.
               </p>
             </div>
             
@@ -1230,7 +1316,7 @@ export default function App() {
 
               <div>
                 <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider">Tutor o Docente a Cargo</label>
-                <input type="text" placeholder="Ej. Prof. Carlos Mendoza" value={studentForm.tutor} onChange={(e) => setStudentForm({ ...studentForm, tutor: e.target.value })} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 focus:outline-none text-sm font-semibold text-slate-800" required/>
+                <input type="text" placeholder="Ej. Prof. Carlos Mendoza" value={studentForm.tutor} onChange={(e) => setStudentForm({ ...studentForm, tutor: e.target.value })} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 focus:outline-none text-sm font-semibold text-slate-800"/>
               </div>
 
               <div className="flex items-start mt-4">
@@ -1248,7 +1334,7 @@ export default function App() {
                   Cancelar
                 </button>
                 <button type="submit" className="px-6 py-2.5 bg-violet-600 hover:bg-violet-700 text-white rounded-xl transition text-xs font-bold shadow-md hover:shadow-lg shadow-violet-100">
-                  Iniciar Simulacro 🚀
+                  {selectedExam ? "Iniciar Simulacro 🚀" : "Confirmar Inscripción 🚀"}
                 </button>
               </div>
             </form>
