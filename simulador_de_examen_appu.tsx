@@ -658,7 +658,7 @@ export default function App() {
 
   const handleStartExamAfterRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!studentForm.name.trim() || !studentForm.school.trim() || !studentForm.dni.trim() || !studentForm.phone.trim()) {
+    if (!studentForm.name.trim() || !studentForm.school.trim() || !studentForm.dni.trim() || !studentForm.phone.trim() || !studentForm.grade.trim()) {
       showToast("Por favor, completa todos los campos obligatorios del formulario.", "warning");
       return;
     }
@@ -1517,16 +1517,7 @@ export default function App() {
                 </div>
               </div>
 
-              <div>
-                <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider">Tutor o Docente a Cargo</label>
-                <input 
-                  type="text" 
-                  placeholder="Ej. Prof. Carlos Mendoza"
-                  value={studentForm.tutor}
-                  onChange={(e: any) => setStudentForm({ ...studentForm, tutor: e.target.value })}
-                  className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 focus:outline-none text-sm font-semibold text-slate-800"
-                />
-              </div>
+
 
               <div className="flex items-start mt-4">
                 <input 
