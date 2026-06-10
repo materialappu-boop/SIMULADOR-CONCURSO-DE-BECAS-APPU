@@ -402,103 +402,68 @@ export default function App() {
     return () => unsubscribe();
   }, []);
 
-  // --- SUSCRIPCIÓN A FIRESTORE Y CONTROL OFFLINE (REGLAS 1 y 2) ---
-  useEffect(() => {
-    if (isOfflineMode) {
+  // --- CARGA Y SINCRONIZACIÓN DE DATOS CON VERCEL KV ---
+  const saveKVData = async (key: string, data: any) => {
+    try {
+      // Guardado local (caché/optimista)
+      localStorage.setItem(`appu_${key}`, JSON.stringify(data));
+      
+      // Guardado remoto (Vercel KV)
+      const response = await fetch('/api/data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ key, data })
+      });
+      if (!response.ok) {
+        console.error(`Error al guardar ${key} en Vercel KV: HTTP ${response.status}`);
+      }
+    } catch (error) {
+      console.error(`Error de red al guardar ${key} en Vercel KV:`, error);
+    }
+  };
+
+  const loadKVData = async () => {
+    setLoadingData(true);
+    try {
+      const response = await fetch('/api/data');
+      if (response.ok) {
+        const data = await response.json();
+        
+        const finalExams = data.exams && data.exams.length > 0 ? data.exams : defaultExams;
+        const finalQuestions = data.questions && data.questions.length > 0 ? data.questions : defaultQuestions;
+        const finalResults = data.results || [];
+        
+        setExams(finalExams);
+        setQuestions(finalQuestions);
+        setResults(finalResults);
+        
+        localStorage.setItem('appu_exams', JSON.stringify(finalExams));
+        localStorage.setItem('appu_questions', JSON.stringify(finalQuestions));
+        localStorage.setItem('appu_results', JSON.stringify(finalResults));
+      } else {
+        throw new Error(`Error de servidor: ${response.status}`);
+      }
+    } catch (error) {
+      console.warn("No se pudo conectar con Vercel KV. Usando caché local:", error);
+      
       const storedExams = localStorage.getItem('appu_exams');
       const storedQuestions = localStorage.getItem('appu_questions');
       const storedResults = localStorage.getItem('appu_results');
       
-      let finalExams = defaultExams;
-      let finalQuestions = defaultQuestions;
-      let finalResults: any[] = [];
-      
-      if (storedExams) {
-        try { finalExams = JSON.parse(storedExams); } catch (e) {}
-      } else {
-        localStorage.setItem('appu_exams', JSON.stringify(defaultExams));
-      }
-      
-      if (storedQuestions) {
-        try { finalQuestions = JSON.parse(storedQuestions); } catch (e) {}
-      } else {
-        localStorage.setItem('appu_questions', JSON.stringify(defaultQuestions));
-      }
-
-      if (storedResults) {
-        try { finalResults = JSON.parse(storedResults); } catch (e) {}
-      } else {
-        localStorage.setItem('appu_results', JSON.stringify([]));
-      }
-      
-      setExams(finalExams);
-      setQuestions(finalQuestions);
-      setResults(finalResults);
+      setExams(storedExams ? JSON.parse(storedExams) : defaultExams);
+      setQuestions(storedQuestions ? JSON.parse(storedQuestions) : defaultQuestions);
+      setResults(storedResults ? JSON.parse(storedResults) : []);
+    } finally {
       setLoadingData(false);
       triggerMathJax();
-      return;
     }
+  };
 
-    if (!user) return;
-
-    setLoadingData(true);
-
-    const examsCollection = collection(db, 'artifacts', appId, 'public', 'data', 'exams');
-    const questionsCollection = collection(db, 'artifacts', appId, 'public', 'data', 'questions');
-    const resultsCollection = collection(db, 'artifacts', appId, 'public', 'data', 'results');
-
-    const unsubscribeExams = onSnapshot(examsCollection, 
-      (snapshot: any) => {
-        const examsList: Exam[] = [];
-        snapshot.forEach((doc: any) => {
-          examsList.push({ id: doc.id, ...doc.data() } as Exam);
-        });
-        setExams(examsList);
-        triggerMathJax();
-      },
-      (error: any) => {
-        console.error("Error cargando exámenes:", error);
-        showToast("Error al sincronizar exámenes.", "error");
-      }
-    );
-
-    const unsubscribeQuestions = onSnapshot(questionsCollection, 
-      (snapshot: any) => {
-        const questionsList: Question[] = [];
-        snapshot.forEach((doc: any) => {
-          questionsList.push({ id: doc.id, ...doc.data() } as Question);
-        });
-        questionsList.sort((a, b) => (a.order || 0) - (b.order || 0));
-        setQuestions(questionsList);
-        setLoadingData(false);
-        triggerMathJax();
-      },
-      (error: any) => {
-        console.error("Error cargando preguntas:", error);
-        showToast("Error al sincronizar preguntas.", "error");
-        setLoadingData(false);
-      }
-    );
-
-    const unsubscribeResults = onSnapshot(resultsCollection, 
-      (snapshot: any) => {
-        const resultsList: any[] = [];
-        snapshot.forEach((doc: any) => {
-          resultsList.push({ id: doc.id, ...doc.data() });
-        });
-        setResults(resultsList);
-      },
-      (error: any) => {
-        console.error("Error cargando resultados:", error);
-      }
-    );
-
-    return () => {
-      unsubscribeExams();
-      unsubscribeQuestions();
-      unsubscribeResults();
-    };
-  }, [user, isOfflineMode]);
+  useEffect(() => {
+    loadKVData();
+  }, []);
 
   // --- CONTROL DEL TEMPORIZADOR DEL EXAMEN ---
   useEffect(() => {
@@ -679,6 +644,7 @@ export default function App() {
 
     if (studentForm.registrationSource !== 'simulacro') {
       const newResult = {
+        id: "res-" + Date.now(),
         examId: "N/A",
         examName: studentForm.registrationSource === 'concurso' ? 'Inscripción: Concurso de Becas' : 'Inscripción: Reforzamiento',
         studentName: studentForm.name,
@@ -686,31 +652,15 @@ export default function App() {
         phone: studentForm.phone,
         school: studentForm.school,
         grade: studentForm.grade,
-        tutor: studentForm.tutor,
+        tutor: studentForm.tutor || "",
         score: "N/A",
         createdAt: new Date().toISOString(),
         tag: studentForm.registrationSource
       };
 
-      if (isOfflineMode) {
-        const storedResults = localStorage.getItem('appu_results');
-        let updatedResults = [];
-        if (storedResults) {
-          try { updatedResults = JSON.parse(storedResults); } catch (err) {}
-        }
-        const resultWithId = { id: "res-" + Date.now(), ...newResult };
-        updatedResults.push(resultWithId);
-        localStorage.setItem('appu_results', JSON.stringify(updatedResults));
-        setResults(updatedResults);
-      } else {
-        try {
-          const resultsCollection = collection(db, 'artifacts', appId, 'public', 'data', 'results');
-          await addDoc(resultsCollection, newResult);
-        } catch (error) {
-          console.error("Error al guardar registro:", error);
-          showToast("No se pudo registrar la inscripción en la base de datos.", "error");
-        }
-      }
+      const updatedResults = [...results, newResult];
+      setResults(updatedResults);
+      await saveKVData('results', updatedResults);
 
       setShowStudentRegisterModal(false);
       showToast("¡Inscripción exitosa! Nos pondremos en contacto contigo y ya tienes acceso a los simulacros.", "success");
@@ -745,6 +695,7 @@ export default function App() {
         const omitted = resultsData.omitted;
 
         const newResult = {
+          id: "res-" + Date.now(),
           examId: selectedExam?.id || "",
           examName: selectedExam?.name || "",
           studentName: studentForm.name,
@@ -752,7 +703,7 @@ export default function App() {
           phone: studentForm.phone,
           school: studentForm.school,
           grade: studentForm.grade,
-          tutor: studentForm.tutor,
+          tutor: studentForm.tutor || "",
           score: score,
           maxScore: maxScore,
           correctCount: correct,
@@ -763,27 +714,10 @@ export default function App() {
           tag: 'simulacro'
         };
 
-        if (isOfflineMode) {
-          const storedResults = localStorage.getItem('appu_results');
-          let updatedResults = [];
-          if (storedResults) {
-            try { updatedResults = JSON.parse(storedResults); } catch (e) {}
-          }
-          const resultWithId = { id: "res-" + Date.now(), ...newResult };
-          updatedResults.push(resultWithId);
-          localStorage.setItem('appu_results', JSON.stringify(updatedResults));
-          setResults(updatedResults);
-          showToast("¡Resultado guardado localmente con éxito!", "success");
-        } else {
-          try {
-            const resultsCollection = collection(db, 'artifacts', appId, 'public', 'data', 'results');
-            await addDoc(resultsCollection, newResult);
-            showToast("¡Resultado enviado y registrado con éxito!", "success");
-          } catch (error) {
-            console.error("Error al guardar resultado:", error);
-            showToast("No se pudo registrar el resultado en la base de datos.", "error");
-          }
-        }
+        const updatedResults = [...results, newResult];
+        setResults(updatedResults);
+        await saveKVData('results', updatedResults);
+        showToast("¡Resultado registrado con éxito!", "success");
 
         setExamFinished(true);
         setCurrentView('student-results');
@@ -874,114 +808,60 @@ export default function App() {
         let importedCount = 0;
         let questionsCount = 0;
 
-        if (isOfflineMode) {
-          let updatedExams = [...exams];
-          let updatedQuestions = [...questions];
+        let updatedExams = [...exams];
+        let updatedQuestions = [...questions];
 
-          for (const examData of examsToImport) {
-            const newExamId = "exam-" + Date.now() + "-" + Math.random().toString(36).substr(2, 5);
-            const newExam: Exam = {
-              id: newExamId,
-              name: examData.name,
-              description: examData.description || "",
-              createdAt: new Date().toISOString()
-            };
-            updatedExams.push(newExam);
-            importedCount++;
+        for (const examData of examsToImport) {
+          const newExamId = "exam-" + Date.now() + "-" + Math.random().toString(36).substr(2, 5);
+          const newExam: Exam = {
+            id: newExamId,
+            name: examData.name,
+            description: examData.description || "",
+            createdAt: new Date().toISOString()
+          };
+          updatedExams.push(newExam);
+          importedCount++;
 
-            if (Array.isArray(examData.questions)) {
-              examData.questions.forEach((qData: any, idx: number) => {
-                const imgVal = qData.imageUrl || "";
-                const imgType = qData.imageType || (imgVal ? (imgVal.startsWith('data:') ? 'file' : 'url') : 'none');
-                
-                const solImgVal = qData.solutionImageUrl || "";
-                const solImgType = qData.solutionImageType || (solImgVal ? (solImgVal.startsWith('data:') ? 'file' : 'url') : 'none');
-
-                const newQuestion: Question = {
-                  id: "q-" + Date.now() + "-" + Math.random().toString(36).substr(2, 5),
-                  examId: newExamId,
-                  text: qData.text || "Pregunta sin texto",
-                  imageType: imgType,
-                  imageUrl: imgVal,
-                  options: {
-                    A: qData.options?.A || "",
-                    B: qData.options?.B || "",
-                    C: qData.options?.C || "",
-                    D: qData.options?.D || "",
-                    E: qData.options?.E || ""
-                  },
-                  correctOption: qData.correctOption || "A",
-                  solutionText: qData.solutionText || "",
-                  solutionImageType: solImgType,
-                  solutionImageUrl: solImgVal,
-                  order: qData.order !== undefined ? Number(qData.order) : idx + 1,
-                  createdAt: new Date().toISOString()
-                };
-                updatedQuestions.push(newQuestion);
-                questionsCount++;
-              });
-            }
-          }
-
-          setExams(updatedExams);
-          setQuestions(updatedQuestions);
-          localStorage.setItem('appu_exams', JSON.stringify(updatedExams));
-          localStorage.setItem('appu_questions', JSON.stringify(updatedQuestions));
-          
-          showToast(`Importación local exitosa: ${importedCount} examen(es) y ${questionsCount} pregunta(s).`, "success");
-        } else {
-          const examsCollection = collection(db, 'artifacts', appId, 'public', 'data', 'exams');
-          const questionsCollection = collection(db, 'artifacts', appId, 'public', 'data', 'questions');
-
-          for (const examData of examsToImport) {
-            const examDocRef = await addDoc(examsCollection, {
-              name: examData.name,
-              description: examData.description || "",
-              createdAt: new Date().toISOString()
-            });
-            const newExamId = examDocRef.id;
-            importedCount++;
-
-            if (Array.isArray(examData.questions) && examData.questions.length > 0) {
-              const batch = writeBatch(db);
+          if (Array.isArray(examData.questions)) {
+            examData.questions.forEach((qData: any, idx: number) => {
+              const imgVal = qData.imageUrl || "";
+              const imgType = qData.imageType || (imgVal ? (imgVal.startsWith('data:') ? 'file' : 'url') : 'none');
               
-              examData.questions.forEach((qData: any, idx: number) => {
-                const imgVal = qData.imageUrl || "";
-                const imgType = qData.imageType || (imgVal ? (imgVal.startsWith('data:') ? 'file' : 'url') : 'none');
-                
-                const solImgVal = qData.solutionImageUrl || "";
-                const solImgType = qData.solutionImageType || (solImgVal ? (solImgVal.startsWith('data:') ? 'file' : 'url') : 'none');
+              const solImgVal = qData.solutionImageUrl || "";
+              const solImgType = qData.solutionImageType || (solImgVal ? (solImgVal.startsWith('data:') ? 'file' : 'url') : 'none');
 
-                const qRef = doc(questionsCollection);
-                const qPayload = {
-                  examId: newExamId,
-                  text: qData.text || "Pregunta sin texto",
-                  imageType: imgType,
-                  imageUrl: imgVal,
-                  options: {
-                    A: qData.options?.A || "",
-                    B: qData.options?.B || "",
-                    C: qData.options?.C || "",
-                    D: qData.options?.D || "",
-                    E: qData.options?.E || ""
-                  },
-                  correctOption: qData.correctOption || "A",
-                  solutionText: qData.solutionText || "",
-                  solutionImageType: solImgType,
-                  solutionImageUrl: solImgVal,
-                  order: qData.order !== undefined ? Number(qData.order) : idx + 1,
-                  createdAt: new Date().toISOString()
-                };
-                batch.set(qRef, qPayload);
-                questionsCount++;
-              });
-
-              await batch.commit();
-            }
+              const newQuestion: Question = {
+                id: "q-" + Date.now() + "-" + Math.random().toString(36).substr(2, 5),
+                examId: newExamId,
+                text: qData.text || "Pregunta sin texto",
+                imageType: imgType,
+                imageUrl: imgVal,
+                options: {
+                  A: qData.options?.A || "",
+                  B: qData.options?.B || "",
+                  C: qData.options?.C || "",
+                  D: qData.options?.D || "",
+                  E: qData.options?.E || ""
+                },
+                correctOption: qData.correctOption || "A",
+                solutionText: qData.solutionText || "",
+                solutionImageType: solImgType,
+                solutionImageUrl: solImgVal,
+                order: qData.order !== undefined ? Number(qData.order) : idx + 1,
+                createdAt: new Date().toISOString()
+              };
+              updatedQuestions.push(newQuestion);
+              questionsCount++;
+            });
           }
-
-          showToast(`Importación en base de datos exitosa: ${importedCount} examen(es) y ${questionsCount} pregunta(s).`, "success");
         }
+
+        setExams(updatedExams);
+        setQuestions(updatedQuestions);
+        await saveKVData('exams', updatedExams);
+        await saveKVData('questions', updatedQuestions);
+        
+        showToast(`Importación exitosa: ${importedCount} examen(es) y ${questionsCount} pregunta(s).`, "success");
 
         if (e.target) e.target.value = '';
         triggerMathJax();
@@ -1043,50 +923,23 @@ export default function App() {
       return;
     }
 
-    if (isOfflineMode) {
-      let updatedExams = [...exams];
-      if (examForm.id) {
-        updatedExams = updatedExams.map(ex => ex.id === examForm.id ? { ...ex, name: examForm.name, description: examForm.description, updatedAt: new Date().toISOString() } : ex);
-        showToast("Examen actualizado localmente.", "success");
-      } else {
-        const newExam: Exam = {
-          id: "exam-" + Date.now(),
-          name: examForm.name,
-          description: examForm.description,
-          createdAt: new Date().toISOString()
-        };
-        updatedExams.push(newExam);
-        showToast("Examen creado localmente.", "success");
-      }
-      setExams(updatedExams);
-      localStorage.setItem('appu_exams', JSON.stringify(updatedExams));
-      setExamForm({ id: null, name: '', description: '' });
-      return;
+    let updatedExams = [...exams];
+    if (examForm.id) {
+      updatedExams = updatedExams.map(ex => ex.id === examForm.id ? { ...ex, name: examForm.name, description: examForm.description, updatedAt: new Date().toISOString() } : ex);
+      showToast("Examen actualizado correctamente.", "success");
+    } else {
+      const newExam: Exam = {
+        id: "exam-" + Date.now(),
+        name: examForm.name,
+        description: examForm.description,
+        createdAt: new Date().toISOString()
+      };
+      updatedExams.push(newExam);
+      showToast("Examen creado con éxito.", "success");
     }
-
-    try {
-      const examsCollection = collection(db, 'artifacts', appId, 'public', 'data', 'exams');
-      if (examForm.id) {
-        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'exams', examForm.id);
-        await updateDoc(docRef, {
-          name: examForm.name,
-          description: examForm.description,
-          updatedAt: new Date().toISOString()
-        });
-        showToast("Examen actualizado correctamente.", "success");
-      } else {
-        await addDoc(examsCollection, {
-          name: examForm.name,
-          description: examForm.description,
-          createdAt: new Date().toISOString()
-        });
-        showToast("Examen creado con éxito.", "success");
-      }
-      setExamForm({ id: null, name: '', description: '' });
-    } catch (error: any) {
-      console.error("Error al guardar examen:", error);
-      showToast("No se pudo guardar el examen.", "error");
-    }
+    setExams(updatedExams);
+    await saveKVData('exams', updatedExams);
+    setExamForm({ id: null, name: '', description: '' });
   };
 
   const handleEditExam = (exam: Exam) => {
@@ -1102,40 +955,15 @@ export default function App() {
       "¿Eliminar Examen?",
       "Se eliminará el examen y perderás la agrupación de sus preguntas de manera permanente.",
       async () => {
-        if (isOfflineMode) {
-          const updatedExams = exams.filter(ex => ex.id !== examId);
-          const updatedQuestions = questions.map(q => q.examId === examId ? { ...q, examId: '' } : q);
-          setExams(updatedExams);
-          setQuestions(updatedQuestions);
-          localStorage.setItem('appu_exams', JSON.stringify(updatedExams));
-          localStorage.setItem('appu_questions', JSON.stringify(updatedQuestions));
-          showToast("Examen eliminado localmente.", "info");
-          if (examForm.id === examId) {
-            setExamForm({ id: null, name: '', description: '' });
-          }
-          return;
-        }
-
-        try {
-          const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'exams', examId);
-          await deleteDoc(docRef);
-          
-          const batch = writeBatch(db);
-          questions.forEach((q: Question) => {
-            if (q.examId === examId) {
-              const qRef = doc(db, 'artifacts', appId, 'public', 'data', 'questions', q.id);
-              batch.update(qRef, { examId: '' });
-            }
-          });
-          await batch.commit();
-
-          showToast("Examen eliminado y preguntas desvinculadas.", "info");
-          if (examForm.id === examId) {
-            setExamForm({ id: null, name: '', description: '' });
-          }
-        } catch (error: any) {
-          console.error("Error eliminando examen:", error);
-          showToast("Error al intentar eliminar el examen.", "error");
+        const updatedExams = exams.filter(ex => ex.id !== examId);
+        const updatedQuestions = questions.map(q => q.examId === examId ? { ...q, examId: '' } : q);
+        setExams(updatedExams);
+        setQuestions(updatedQuestions);
+        await saveKVData('exams', updatedExams);
+        await saveKVData('questions', updatedQuestions);
+        showToast("Examen eliminado y preguntas desvinculadas.", "info");
+        if (examForm.id === examId) {
+          setExamForm({ id: null, name: '', description: '' });
         }
       }
     );
@@ -1172,71 +1000,37 @@ export default function App() {
       updatedAt: new Date().toISOString()
     };
 
-    if (isOfflineMode) {
-      let updatedQuestions = [...questions];
-      if (questionForm.id) {
-        updatedQuestions = updatedQuestions.map(q => q.id === questionForm.id ? { ...q, ...questionData } : q);
-        showToast("Pregunta actualizada localmente.", "success");
-      } else {
-        const newQuestion: Question = {
-          id: "q-" + Date.now(),
-          ...questionData,
-          createdAt: new Date().toISOString()
-        };
-        updatedQuestions.push(newQuestion);
-        showToast("Pregunta añadida localmente.", "success");
-      }
-      updatedQuestions.sort((a, b) => (a.order || 0) - (b.order || 0));
-      setQuestions(updatedQuestions);
-      localStorage.setItem('appu_questions', JSON.stringify(updatedQuestions));
-      
-      setQuestionForm({
-        id: null,
-        examId: questionForm.examId,
-        text: '',
-        imageType: 'none',
-        imageUrl: '',
-        options: { A: '', B: '', C: '', D: '', E: '' },
-        correctOption: 'A',
-        solutionText: '',
-        solutionImageType: 'none',
-        solutionImageUrl: '',
-        order: (Number(questionForm.order) || 0) + 1
-      });
-      triggerMathJax();
-      return;
+    let updatedQuestions = [...questions];
+    if (questionForm.id) {
+      updatedQuestions = updatedQuestions.map(q => q.id === questionForm.id ? { ...q, ...questionData } : q);
+      showToast("Pregunta actualizada exitosamente.", "success");
+    } else {
+      const newQuestion: Question = {
+        id: "q-" + Date.now(),
+        ...questionData,
+        createdAt: new Date().toISOString()
+      };
+      updatedQuestions.push(newQuestion);
+      showToast("Pregunta añadida correctamente.", "success");
     }
-
-    try {
-      const questionsCollection = collection(db, 'artifacts', appId, 'public', 'data', 'questions');
-      if (questionForm.id) {
-        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'questions', questionForm.id);
-        await updateDoc(docRef, questionData);
-        showToast("Pregunta actualizada exitosamente.", "success");
-      } else {
-        questionData.createdAt = new Date().toISOString();
-        await addDoc(questionsCollection, questionData);
-        showToast("Pregunta añadida correctamente.", "success");
-      }
-
-      setQuestionForm({
-        id: null,
-        examId: questionForm.examId,
-        text: '',
-        imageType: 'none',
-        imageUrl: '',
-        options: { A: '', B: '', C: '', D: '', E: '' },
-        correctOption: 'A',
-        solutionText: '',
-        solutionImageType: 'none',
-        solutionImageUrl: '',
-        order: (Number(questionForm.order) || 0) + 1
-      });
-      triggerMathJax();
-    } catch (error: any) {
-      console.error("Error al guardar pregunta:", error);
-      showToast("No se pudo registrar la pregunta.", "error");
-    }
+    updatedQuestions.sort((a, b) => (a.order || 0) - (b.order || 0));
+    setQuestions(updatedQuestions);
+    await saveKVData('questions', updatedQuestions);
+    
+    setQuestionForm({
+      id: null,
+      examId: questionForm.examId,
+      text: '',
+      imageType: 'none',
+      imageUrl: '',
+      options: { A: '', B: '', C: '', D: '', E: '' },
+      correctOption: 'A',
+      solutionText: '',
+      solutionImageType: 'none',
+      solutionImageUrl: '',
+      order: (Number(questionForm.order) || 0) + 1
+    });
+    triggerMathJax();
   };
 
   const handleEditQuestion = (q: Question) => {
@@ -1268,27 +1062,12 @@ export default function App() {
       "¿Eliminar Pregunta?",
       "Esta acción es irreversible y eliminará la pregunta del simulacro.",
       async () => {
-        if (isOfflineMode) {
-          const updatedQuestions = questions.filter(q => q.id !== qId);
-          setQuestions(updatedQuestions);
-          localStorage.setItem('appu_questions', JSON.stringify(updatedQuestions));
-          showToast("Pregunta eliminada localmente.", "info");
-          if (questionForm.id === qId) {
-            setQuestionForm(prev => ({ ...prev, id: null }));
-          }
-          return;
-        }
-
-        try {
-          const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'questions', qId);
-          await deleteDoc(docRef);
-          showToast("Pregunta eliminada.", "info");
-          if (questionForm.id === qId) {
-            setQuestionForm((prev: any) => ({ ...prev, id: null }));
-          }
-        } catch (error: any) {
-          console.error("Error eliminando pregunta:", error);
-          showToast("Ocurrió un error al intentar eliminar.", "error");
+        const updatedQuestions = questions.filter(q => q.id !== qId);
+        setQuestions(updatedQuestions);
+        await saveKVData('questions', updatedQuestions);
+        showToast("Pregunta eliminada.", "info");
+        if (questionForm.id === qId) {
+          setQuestionForm(prev => ({ ...prev, id: null }));
         }
       }
     );
@@ -1301,32 +1080,16 @@ export default function App() {
     const q1 = examQuestionsFiltered[questionIndex];
     const q2 = examQuestionsFiltered[questionIndex + direction];
 
-    if (isOfflineMode) {
-      const tempOrder = q1.order || 0;
-      const updatedQuestions = questions.map(q => {
-        if (q.id === q1.id) return { ...q, order: q2.order || 0 };
-        if (q.id === q2.id) return { ...q, order: tempOrder };
-        return q;
-      });
-      updatedQuestions.sort((a, b) => (a.order || 0) - (b.order || 0));
-      setQuestions(updatedQuestions);
-      localStorage.setItem('appu_questions', JSON.stringify(updatedQuestions));
-      showToast("Orden de pregunta actualizado localmente.", "success");
-      return;
-    }
-
-    try {
-      const q1Ref = doc(db, 'artifacts', appId, 'public', 'data', 'questions', q1.id);
-      const q2Ref = doc(db, 'artifacts', appId, 'public', 'data', 'questions', q2.id);
-
-      const tempOrder = q1.order || 0;
-      await updateDoc(q1Ref, { order: q2.order || 0 });
-      await updateDoc(q2Ref, { order: tempOrder });
-      showToast("Orden actualizado.", "success");
-    } catch (err: any) {
-      console.error(err);
-      showToast("Error al reordenar.", "error");
-    }
+    const tempOrder = q1.order || 0;
+    const updatedQuestions = questions.map(q => {
+      if (q.id === q1.id) return { ...q, order: q2.order || 0 };
+      if (q.id === q2.id) return { ...q, order: tempOrder };
+      return q;
+    });
+    updatedQuestions.sort((a, b) => (a.order || 0) - (b.order || 0));
+    setQuestions(updatedQuestions);
+    await saveKVData('questions', updatedQuestions);
+    showToast("Orden actualizado.", "success");
   };
 
   const formatTime = (totalSeconds: number) => {
