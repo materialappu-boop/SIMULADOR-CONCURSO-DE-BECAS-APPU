@@ -1495,7 +1495,7 @@ export default function App() {
                           </div>
                           <div>
                             <p className="text-[10px] text-blue-200 uppercase font-bold tracking-wider leading-none">FECHA</p>
-                            <p className="text-sm font-extrabold text-white mt-1">13 de Junio</p>
+                            <p className="text-sm font-extrabold text-white mt-1">20 de Junio</p>
                           </div>
                         </div>
 
