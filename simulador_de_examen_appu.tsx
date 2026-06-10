@@ -1758,7 +1758,7 @@ export default function App() {
                         </div>
 
                         <p className="text-slate-500 text-[10px] sm:text-xs leading-normal text-center">
-                          para los ciclos <strong className="text-blue-900 font-extrabold">BECA 18</strong>, <strong className="text-blue-900 font-extrabold">ANUAL SAN MARCOS TARDE</strong> y <strong className="text-blue-900 font-extrabold">ESCOLAR UNI TARDE</strong>. A todos los alumnos de colegios públicos de El Agustino.
+                          para los ciclos <strong className="text-blue-900 font-extrabold">BECA 18</strong>, <strong className="text-blue-900 font-extrabold">ANUAL SAN MARCOS Turno MAÑANA O TARDE</strong> y <strong className="text-blue-900 font-extrabold">ESCOLAR UNI Turno MAÑANA O TARDE</strong>. ¡A todos los alumnos de colegios públicos de El Agustino!
                         </p>
                       </div>
                     </div>
