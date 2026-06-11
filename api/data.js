@@ -25,6 +25,13 @@ module.exports = async function handler(req, res) {
         res.status(400).json({ error: 'Faltan parámetros key o data' });
         return;
       }
+      //  BLOQUE DELETE AQUÍ 
+    else if (req.method === 'DELETE') {
+      await kv.del('appu_exams');
+      await kv.del('appu_questions');
+      await kv.del('appu_results');
+      res.status(200).json({ success: true, message: "Base de datos reseteada" });
+    } 
 
       // Validar llaves permitidas para evitar escrituras arbitrarias
       const kvKey = `appu_${key}`;
