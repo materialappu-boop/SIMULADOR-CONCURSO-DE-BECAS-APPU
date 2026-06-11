@@ -1551,8 +1551,8 @@ export default function App() {
                         ¡Practica en nuestro simulador oficial y prepárate para ganar una <strong className="text-yellow-400 font-extrabold">BECA COMPLETA</strong> de estudios! Dirigido a estudiantes de 3ero, 4to y 5to de secundaria de colegios públicos de El Agustino.
                       </p>
 
-                      {/* Detalles del Evento (Fecha, Hora) */}
-                      <div className="grid grid-cols-2 gap-3 max-w-md pt-2">
+                      {/* Detalles del Evento (Fecha, Hora, Recordatorio) */}
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-w-xl pt-2">
                         {/* Fecha */}
                         <div className="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-3 flex items-center space-x-3">
                           <div className="h-9 w-9 rounded-xl bg-yellow-400 text-[#0f2c59] flex items-center justify-center text-base font-bold flex-shrink-0">
@@ -1572,6 +1572,17 @@ export default function App() {
                           <div>
                             <p className="text-[10px] text-blue-200 uppercase font-bold tracking-wider leading-none">HORA</p>
                             <p className="text-sm font-extrabold text-white mt-1">10:00 AM</p>
+                          </div>
+                        </div>
+
+                        {/* Recordatorio */}
+                        <div className="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-3 flex items-center space-x-3 col-span-2 sm:col-span-1">
+                          <div className="h-9 w-9 rounded-xl bg-emerald-400 text-white flex items-center justify-center text-base font-bold flex-shrink-0">
+                            ✏️
+                          </div>
+                          <div>
+                            <p className="text-[10px] text-blue-200 uppercase font-bold tracking-wider leading-none">RECUERDA</p>
+                            <p className="text-xs font-extrabold text-white mt-1 leading-tight">Traer lápiz y borrador</p>
                           </div>
                         </div>
                       </div>
