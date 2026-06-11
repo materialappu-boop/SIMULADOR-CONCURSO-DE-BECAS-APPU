@@ -305,6 +305,7 @@ export default function App() {
   const [isStudentRegistered, setIsStudentRegistered] = useState<boolean>(false);
   const [results, setResults] = useState<any[]>([]);
   const [activeRankingTab, setActiveRankingTab] = useState<string>('general');
+  const [showRankingInResults, setShowRankingInResults] = useState<boolean>(false);
 
   // --- CARGA DINÁMICA DE MATHJAX ---
   useEffect(() => {
@@ -564,6 +565,7 @@ export default function App() {
       setActiveQuestionIndex(0);
       setExamFinished(false);
       setElapsedTime(0);
+      setShowRankingInResults(false);
       setCurrentView('student-exam');
       showToast(`¡Bienvenido de nuevo, ${savedName}! Iniciando simulacro.`, "success");
     } else {
@@ -621,6 +623,31 @@ export default function App() {
     document.body.removeChild(link);
   };
 
+  const handleDeleteResult = async (resultId: string) => {
+    confirmAction(
+      "¿Eliminar registro?",
+      "Esta acción eliminará el registro de este estudiante de forma permanente.",
+      async () => {
+        const updatedResults = results.filter(res => res.id !== resultId);
+        setResults(updatedResults);
+        await saveKVData('results', updatedResults);
+        showToast("Registro de estudiante eliminado.", "success");
+      }
+    );
+  };
+
+  const handleClearAllResults = async () => {
+    confirmAction(
+      "¿Limpiar todos los datos?",
+      "¡ATENCIÓN! Se eliminarán de forma permanente todos los registros y resultados de los estudiantes. Esta acción no se puede deshacer.",
+      async () => {
+        setResults([]);
+        await saveKVData('results', []);
+        showToast("Todos los registros han sido limpiados.", "success");
+      }
+    );
+  };
+
   const handleStartExamAfterRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!studentForm.name.trim() || !studentForm.school.trim() || !studentForm.dni.trim() || !studentForm.phone.trim() || !studentForm.grade.trim()) {
@@ -672,6 +699,7 @@ export default function App() {
     setActiveQuestionIndex(0);
     setExamFinished(false);
     setElapsedTime(0);
+    setShowRankingInResults(false);
     setCurrentView('student-exam');
   };
 
@@ -730,6 +758,7 @@ export default function App() {
     setActiveQuestionIndex(0);
     setExamFinished(false);
     setElapsedTime(0);
+    setShowRankingInResults(false);
     setCurrentView('student-exam');
   };
 
@@ -1563,7 +1592,7 @@ export default function App() {
                           onClick={() => handleRegisterDirect('concurso')}
                           className="px-6 py-3 bg-[#e1251b] hover:bg-red-700 text-white font-black rounded-full text-xs sm:text-sm uppercase tracking-wider shadow-lg hover:shadow-xl hover:scale-102 transform duration-150 flex items-center space-x-2"
                         >
-                          <span>✅ INSCRIBIRME EN EL CONCURSO</span>
+                          <span>✅ INSCRIBIRSE PARA EL CONCURSO DE BECAS</span>
                         </button>
 
                       </div>
@@ -2352,6 +2381,212 @@ export default function App() {
 
                   </div>
                 </div>
+
+                {/* Botón para ver el ranking de participantes */}
+                <div className="flex justify-center my-6">
+                  <button
+                    onClick={() => {
+                      setShowRankingInResults(true);
+                      setTimeout(() => {
+                        const rankingSec = document.getElementById('results-ranking-section');
+                        rankingSec?.scrollIntoView({ behavior: 'smooth' });
+                      }, 100);
+                    }}
+                    className="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-650 hover:from-blue-750 hover:to-indigo-750 text-white font-extrabold rounded-2xl shadow-lg hover:shadow-xl hover:scale-102 transform duration-155 flex items-center space-x-2 text-sm sm:text-base tracking-wider uppercase"
+                  >
+                    <span>🏆 VER MI POSICIÓN EN EL RANKING DE PARTICIPANTES</span>
+                  </button>
+                </div>
+
+                {/* --- SECCIÓN DE RANKINGS Y CUADRO DE HONOR EN RESULTADOS --- */}
+                {showRankingInResults && (
+                  <div 
+                    id="results-ranking-section"
+                    className="max-w-7xl mx-auto my-8 p-6 sm:p-8 bg-[#e0f2fe]/90 rounded-3xl border-2 border-blue-400 shadow-lg space-y-6 text-left animate-fade-in"
+                  >
+                    <div className="border-b border-blue-300 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div>
+                        <h3 className="text-base sm:text-lg md:text-xl font-black text-slate-900 flex items-center uppercase tracking-wider gap-2">
+                          🏆 CUADRO DE HONOR Y CLASIFICACIONES
+                        </h3>
+                        <p className="text-xs sm:text-sm text-slate-650 mt-1">Sigue los mejores puntajes y el desempeño académico en tiempo real.</p>
+                      </div>
+                      
+                      {/* Tabs de Selección del Ranking */}
+                      <div className="flex bg-white/80 p-1.5 rounded-xl border border-blue-300/80 self-start sm:self-center shadow-sm">
+                        <button
+                          onClick={() => { setActiveRankingTab('general'); triggerMathJax(); }}
+                          className={`px-5 py-2 rounded-lg text-xs sm:text-sm font-extrabold transition-all duration-150 ${
+                            activeRankingTab === 'general'
+                              ? 'bg-blue-600 text-white shadow-md font-black'
+                              : 'text-slate-650 hover:text-slate-900 hover:bg-slate-100/50'
+                          }`}
+                        >
+                          Top 10 General
+                        </button>
+                        <button
+                          onClick={() => { setActiveRankingTab('schools'); triggerMathJax(); }}
+                          className={`px-5 py-2 rounded-lg text-xs sm:text-sm font-extrabold transition-all duration-150 ${
+                            activeRankingTab === 'schools'
+                              ? 'bg-blue-600 text-white shadow-md font-black'
+                              : 'text-slate-650 hover:text-slate-900 hover:bg-slate-100/50'
+                          }`}
+                        >
+                          Colegios (Top 3)
+                        </button>
+                        <button
+                          onClick={() => { setActiveRankingTab('grades'); triggerMathJax(); }}
+                          className={`px-5 py-2 rounded-lg text-xs sm:text-sm font-extrabold transition-all duration-150 ${
+                            activeRankingTab === 'grades'
+                              ? 'bg-blue-600 text-white shadow-md font-black'
+                              : 'text-slate-650 hover:text-slate-900 hover:bg-slate-100/50'
+                          }`}
+                        >
+                          Grados (Top 3)
+                        </button>
+                      </div>
+                    </div>
+
+                    {results.length === 0 ? (
+                      <div className="bg-white rounded-2xl border border-slate-200 p-8 text-center shadow-sm">
+                        <span className="text-4xl block mb-2">⭐</span>
+                        <h4 className="text-base font-bold text-slate-800">Aún no se registran resultados</h4>
+                        <p className="text-slate-500 mt-1 max-w-sm mx-auto text-sm">
+                          ¡Sé el primero en dar un simulacro y liderar el ranking general! Completa una de las pruebas de arriba.
+                        </p>
+                      </div>
+                    ) : (
+                      <>
+                        {/* 1. TOP 10 GENERAL */}
+                        {activeRankingTab === 'general' && (
+                          <div className="bg-white rounded-2xl border border-blue-200/80 shadow-md overflow-hidden animate-fade-in">
+                            <div className="overflow-x-auto">
+                              <table className="w-full text-left border-collapse text-xs sm:text-sm">
+                                <thead>
+                                  <tr className="bg-blue-50/60 border-b border-blue-100 text-[11px] sm:text-xs font-black uppercase tracking-wider text-slate-700">
+                                    <th className="py-3.5 px-5 text-center w-20">Puesto</th>
+                                    <th className="py-3.5 px-5">Estudiante</th>
+                                    <th className="py-3.5 px-5">Colegio</th>
+                                    <th className="py-3.5 px-5">Grado</th>
+                                    <th className="py-3.5 px-5 text-center">Tiempo</th>
+                                    <th className="py-3.5 px-5 text-right pr-8">Puntaje</th>
+                                  </tr>
+                                </thead>
+                                <tbody className="divide-y divide-blue-50 font-medium text-slate-700 bg-white">
+                                  {getGeneralRanking().map((res, index) => {
+                                    const rank = index + 1;
+                                    return (
+                                      <tr key={res.id} className="hover:bg-blue-50/20 transition">
+                                        <td className="py-4 px-5 text-center font-bold text-sm sm:text-base">
+                                          {rank === 1 && <span className="text-2xl" title="1° Puesto">🥇</span>}
+                                          {rank === 2 && <span className="text-2xl" title="2° Puesto">🥈</span>}
+                                          {rank === 3 && <span className="text-2xl" title="3° Puesto">🥉</span>}
+                                          {rank > 3 && <span className="text-slate-500 font-extrabold">{rank}</span>}
+                                        </td>
+                                        <td className="py-4 px-5 font-black text-slate-900 text-sm sm:text-base">
+                                          {res.studentName}
+                                          <span className="block text-[10px] sm:text-[11px] text-slate-500 font-bold mt-0.5">Tutor: {res.tutor}</span>
+                                        </td>
+                                        <td className="py-4 px-5 text-slate-700 font-semibold text-xs sm:text-sm">{res.school}</td>
+                                        <td className="py-4 px-5">
+                                          <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-[10px] sm:text-xs font-extrabold border border-blue-200/50">
+                                            {res.grade}
+                                          </span>
+                                        </td>
+                                        <td className="py-4 px-5 text-center text-slate-700 font-mono text-xs sm:text-sm font-bold">
+                                          {formatTime(res.timeSpent || 0)}
+                                        </td>
+                                        <td className="py-4 px-5 text-right pr-8 font-mono font-black text-violet-700 text-base sm:text-lg">
+                                          {res.score} <span className="text-xs font-bold text-slate-500">pts</span>
+                                        </td>
+                                      </tr>
+                                    );
+                                  })}
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* 2. RANKING POR COLEGIO */}
+                        {activeRankingTab === 'schools' && (
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in">
+                            {getRankingsByGroup('school', 3).map((schoolGroup) => (
+                              <div key={schoolGroup.name} className="bg-white rounded-2xl border border-blue-200/80 shadow-md p-5 flex flex-col justify-between">
+                                <div className="border-b border-blue-100 pb-2 mb-3">
+                                  <h4 className="font-black text-slate-900 text-sm sm:text-base flex items-center">
+                                    <span className="text-lg mr-2">🏫</span>
+                                    {schoolGroup.name}
+                                  </h4>
+                                </div>
+                                <div className="space-y-2.5">
+                                  {schoolGroup.topResults.map((res, idx) => (
+                                    <div key={res.id} className="flex items-center justify-between p-3 rounded-xl bg-blue-50/30 border border-blue-100/70 hover:bg-blue-50/60 transition">
+                                      <div className="flex items-center space-x-3 overflow-hidden">
+                                        <span className={`h-7 w-7 rounded-lg font-black text-sm flex items-center justify-center flex-shrink-0 ${
+                                          idx === 0 ? 'bg-yellow-100 text-yellow-800' :
+                                          idx === 1 ? 'bg-slate-200 text-slate-700' : 'bg-orange-100 text-orange-850'
+                                        }`}>
+                                          {idx + 1}
+                                        </span>
+                                        <div className="truncate">
+                                          <p className="text-sm font-black text-slate-900 truncate">{res.studentName}</p>
+                                          <p className="text-[10px] sm:text-xs font-semibold text-slate-500 truncate">{res.grade}</p>
+                                        </div>
+                                      </div>
+                                      <div className="text-right flex-shrink-0 ml-3">
+                                        <span className="text-sm sm:text-base font-black text-violet-750 font-mono">{res.score}</span>
+                                        <p className="text-[10px] text-slate-500 font-mono mt-0.5 font-bold">{formatTime(res.timeSpent || 0)}</p>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* 3. RANKING POR GRADOS */}
+                        {activeRankingTab === 'grades' && (
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
+                            {getRankingsByGroup('grade', 3).map((gradeGroup) => (
+                              <div key={gradeGroup.name} className="bg-white rounded-2xl border border-blue-200/80 shadow-md p-5 flex flex-col justify-between">
+                                <div className="border-b border-blue-100 pb-2 mb-3">
+                                  <h4 className="font-black text-slate-900 text-sm sm:text-base flex items-center">
+                                    <span className="text-lg mr-2">🎓</span>
+                                    {gradeGroup.name}
+                                  </h4>
+                                </div>
+                                <div className="space-y-2.5">
+                                  {gradeGroup.topResults.map((res, idx) => (
+                                    <div key={res.id} className="flex items-center justify-between p-3 rounded-xl bg-blue-50/30 border border-blue-100/70 hover:bg-blue-50/60 transition">
+                                      <div className="flex items-center space-x-3 overflow-hidden">
+                                        <span className={`h-7 w-7 rounded-lg font-black text-sm flex items-center justify-center flex-shrink-0 ${
+                                          idx === 0 ? 'bg-yellow-100 text-yellow-800' :
+                                          idx === 1 ? 'bg-slate-200 text-slate-700' : 'bg-orange-100 text-orange-850'
+                                        }`}>
+                                          {idx + 1}
+                                        </span>
+                                        <div className="truncate">
+                                          <p className="text-sm font-black text-slate-900 truncate">{res.studentName}</p>
+                                          <p className="text-[10px] sm:text-xs font-semibold text-slate-500 truncate">{res.school}</p>
+                                        </div>
+                                      </div>
+                                      <div className="text-right flex-shrink-0 ml-3">
+                                        <span className="text-sm sm:text-base font-black text-violet-750 font-mono">{res.score}</span>
+                                        <p className="text-[10px] text-slate-500 font-mono mt-0.5 font-bold">{formatTime(res.timeSpent || 0)}</p>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                )}
 
                 <div className="flex flex-col sm:flex-row items-center justify-between mb-6">
                   <h3 className="text-xl font-bold text-slate-800 mb-4 sm:mb-0">Revisión de Preguntas y Solucionario</h3>
@@ -3243,12 +3478,13 @@ export default function App() {
                             <th className="py-3 px-4">Examen/Registro</th>
                             <th className="py-3 px-4">Etiqueta</th>
                             <th className="py-3 px-4 text-right">Puntaje</th>
+                            <th className="py-3 px-4 text-center">Acción</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
                           {results.length === 0 ? (
                             <tr>
-                              <td colSpan={8} className="py-8 text-center text-slate-400 italic">No hay registros de datos aún.</td>
+                              <td colSpan={10} className="py-8 text-center text-slate-400 italic">No hay registros de datos aún.</td>
                             </tr>
                           ) : (
                             results.map((res: any) => (
@@ -3270,12 +3506,34 @@ export default function App() {
                                   )}
                                 </td>
                                 <td className="py-3 px-4 text-right font-black text-violet-700">{res.score}{res.score !== 'N/A' ? ' pts' : ''}</td>
+                                <td className="py-3 px-4 text-center">
+                                  <button
+                                    onClick={() => handleDeleteResult(res.id)}
+                                    className="p-1.5 text-rose-600 hover:text-rose-800 hover:bg-rose-50 rounded-lg transition inline-flex items-center justify-center"
+                                    title="Eliminar registro"
+                                  >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                  </button>
+                                </td>
                               </tr>
                             ))
                           )}
                         </tbody>
                       </table>
                     </div>
+                    {results.length > 0 && (
+                      <div className="mt-4 flex justify-end border-t border-slate-100 pt-4">
+                        <button
+                          onClick={handleClearAllResults}
+                          className="px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 hover:text-rose-800 rounded-lg text-xs font-bold border border-rose-200 transition flex items-center space-x-1.5 shadow-sm"
+                        >
+                          <span>🗑️</span>
+                          <span>Limpiar Todos los Datos</span>
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
 
