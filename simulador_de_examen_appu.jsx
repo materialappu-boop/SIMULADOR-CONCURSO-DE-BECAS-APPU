@@ -1,9 +1,65 @@
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 import React, { useState, useEffect } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 // --- CONFIGURACIÓN DE FIREBASE ---
-const firebaseConfig = typeof __firebase_config !== 'undefined'
+var firebaseConfig = typeof __firebase_config !== 'undefined'
     ? JSON.parse(__firebase_config)
     : {
         apiKey: "AIzaSyDummyKeyForAppuLocalDevOnly",
@@ -13,12 +69,12 @@ const firebaseConfig = typeof __firebase_config !== 'undefined'
         messagingSenderId: "1234567890",
         appId: "1:1234567890:web:abcdef"
     };
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'appu-becas-2026';
+var app = initializeApp(firebaseConfig);
+var auth = getAuth(app);
+var db = getFirestore(app);
+var appId = typeof __app_id !== 'undefined' ? __app_id : 'appu-becas-2026';
 // --- DATOS POR DEFECTO PARA EL MODO OFFLINE / FALLBACK ---
-const defaultExams = [
+var defaultExams = [
     {
         id: "exam-1",
         name: "Simulacro Básico (1° y 2° de Secundaria)",
@@ -35,7 +91,7 @@ const defaultExams = [
         description: "Desafío de alto rendimiento en Trigonometría, Física Aplicada y Química Orgánica."
     }
 ];
-const defaultQuestions = [
+var defaultQuestions = [
     // EXAM 1: Básico
     {
         id: "q-1-1",
@@ -155,38 +211,39 @@ const defaultQuestions = [
     }
 ];
 export default function App() {
+    var _this = this;
     // --- ESTADOS DE LA APLICACIÓN ---
-    const [user, setUser] = useState(null);
-    const [currentView, setCurrentView] = useState('student-home'); // student-home, student-exam, student-results, admin-panel
+    var _a = useState(null), user = _a[0], setUser = _a[1];
+    var _b = useState('student-home'), currentView = _b[0], setCurrentView = _b[1]; // student-home, student-exam, student-results, admin-panel
     // Base de datos sincronizada
-    const [exams, setExams] = useState([]);
-    const [questions, setQuestions] = useState([]);
-    const [loadingData, setLoadingData] = useState(true);
-    const [isOfflineMode, setIsOfflineMode] = useState(false);
+    var _c = useState([]), exams = _c[0], setExams = _c[1];
+    var _d = useState([]), questions = _d[0], setQuestions = _d[1];
+    var _e = useState(true), loadingData = _e[0], setLoadingData = _e[1];
+    var _f = useState(false), isOfflineMode = _f[0], setIsOfflineMode = _f[1];
     // Estado del Examen Activo (Estudiante)
-    const [selectedExam, setSelectedExam] = useState(null);
-    const [studentAnswers, setStudentAnswers] = useState({}); // { questionId: selectedOptionLetter }
-    const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
-    const [examFinished, setExamFinished] = useState(false);
-    const [startTime, setStartTime] = useState(null);
-    const [elapsedTime, setElapsedTime] = useState(0);
-    const [timerIntervalId, setTimerIntervalId] = useState(null);
+    var _g = useState(null), selectedExam = _g[0], setSelectedExam = _g[1];
+    var _h = useState({}), studentAnswers = _h[0], setStudentAnswers = _h[1]; // { questionId: selectedOptionLetter }
+    var _j = useState(0), activeQuestionIndex = _j[0], setActiveQuestionIndex = _j[1];
+    var _k = useState(false), examFinished = _k[0], setExamFinished = _k[1];
+    var _l = useState(null), startTime = _l[0], setStartTime = _l[1];
+    var _m = useState(0), elapsedTime = _m[0], setElapsedTime = _m[1];
+    var _o = useState(null), timerIntervalId = _o[0], setTimerIntervalId = _o[1];
     // Estado del Panel de Administración
-    const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
-    const [adminPasswordInput, setAdminPasswordInput] = useState('');
-    const [adminTab, setAdminTab] = useState('exams'); // exams, questions
-    const [selectedAdminExamId, setSelectedAdminExamId] = useState('all');
+    var _p = useState(false), isAdminAuthenticated = _p[0], setIsAdminAuthenticated = _p[1];
+    var _q = useState(''), adminPasswordInput = _q[0], setAdminPasswordInput = _q[1];
+    var _r = useState('exams'), adminTab = _r[0], setAdminTab = _r[1]; // exams, questions
+    var _s = useState('all'), selectedAdminExamId = _s[0], setSelectedAdminExamId = _s[1];
     // Modales y Notificaciones
-    const [toast, setToast] = useState({ show: false, message: '', type: 'info' });
-    const [modalConfirm, setModalConfirm] = useState({ show: false, title: '', message: '', onConfirm: null });
-    const [showAdminLoginModal, setShowAdminLoginModal] = useState(false);
-    const [showFlyerModal, setShowFlyerModal] = useState(false);
+    var _t = useState({ show: false, message: '', type: 'info' }), toast = _t[0], setToast = _t[1];
+    var _u = useState({ show: false, title: '', message: '', onConfirm: null }), modalConfirm = _u[0], setModalConfirm = _u[1];
+    var _v = useState(false), showAdminLoginModal = _v[0], setShowAdminLoginModal = _v[1];
+    var _w = useState(false), showFlyerModal = _w[0], setShowFlyerModal = _w[1];
     // Estado del Banner Dinámico Interactivo (Flyer)
-    const [activeBannerTab, setActiveBannerTab] = useState('concurso'); // concurso, grados, cronograma, beneficios
-    const [selectedBannerGrade, setSelectedBannerGrade] = useState('1-2'); // 1-2, 3, 4-5
+    var _x = useState('concurso'), activeBannerTab = _x[0], setActiveBannerTab = _x[1]; // concurso, grados, cronograma, beneficios
+    var _y = useState('1-2'), selectedBannerGrade = _y[0], setSelectedBannerGrade = _y[1]; // 1-2, 3, 4-5
     // Formularios de Administración
-    const [examForm, setExamForm] = useState({ id: null, name: '', description: '' });
-    const [questionForm, setQuestionForm] = useState({
+    var _z = useState({ id: null, name: '', description: '' }), examForm = _z[0], setExamForm = _z[1];
+    var _0 = useState({
         id: null,
         examId: '',
         text: '',
@@ -204,14 +261,14 @@ export default function App() {
         solutionImageType: 'none',
         solutionImageUrl: '',
         order: 0
-    });
+    }), questionForm = _0[0], setQuestionForm = _0[1];
     // Filtros y Buscadores en Admin
-    const [searchQuestionQuery, setSearchQuestionQuery] = useState('');
+    var _1 = useState(''), searchQuestionQuery = _1[0], setSearchQuestionQuery = _1[1];
     // Estado para el convertidor de imágenes a Base64 en el panel de administración
-    const [converterBase64Result, setConverterBase64Result] = useState('');
-    const [converterFileName, setConverterFileName] = useState('');
+    var _2 = useState(''), converterBase64Result = _2[0], setConverterBase64Result = _2[1];
+    var _3 = useState(''), converterFileName = _3[0], setConverterFileName = _3[1];
     // Estado de registro de estudiante y lista de resultados para rankings
-    const [studentForm, setStudentForm] = useState({
+    var _4 = useState({
         name: '',
         school: '',
         grade: '3° de Secundaria',
@@ -220,14 +277,14 @@ export default function App() {
         phone: '',
         dataConsent: false,
         registrationSource: 'simulacro'
-    });
-    const [showStudentRegisterModal, setShowStudentRegisterModal] = useState(false);
-    const [isStudentRegistered, setIsStudentRegistered] = useState(false);
-    const [results, setResults] = useState([]);
-    const [activeRankingTab, setActiveRankingTab] = useState('general');
-    const [showRankingInResults, setShowRankingInResults] = useState(false);
+    }), studentForm = _4[0], setStudentForm = _4[1];
+    var _5 = useState(false), showStudentRegisterModal = _5[0], setShowStudentRegisterModal = _5[1];
+    var _6 = useState(false), isStudentRegistered = _6[0], setIsStudentRegistered = _6[1];
+    var _7 = useState([]), results = _7[0], setResults = _7[1];
+    var _8 = useState('general'), activeRankingTab = _8[0], setActiveRankingTab = _8[1];
+    var _9 = useState(false), showRankingInResults = _9[0], setShowRankingInResults = _9[1];
     // --- CARGA DINÁMICA DE MATHJAX ---
-    useEffect(() => {
+    useEffect(function () {
         window.MathJax = {
             tex: {
                 inlineMath: [['$', '$'], ['\\(', '\\)']],
@@ -238,72 +295,74 @@ export default function App() {
                 skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
             },
             startup: {
-                pageReady: () => {
+                pageReady: function () {
                     return window.MathJax.startup.defaultPageReady();
                 }
             }
         };
-        const script = document.createElement('script');
+        var script = document.createElement('script');
         script.src = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js";
         script.async = true;
         document.head.appendChild(script);
-        return () => {
+        return function () {
             document.head.removeChild(script);
         };
     }, []);
     // Cargar estado de registro local al montar
-    useEffect(() => {
-        const registered = localStorage.getItem('appu_student_registered') === 'true';
+    useEffect(function () {
+        var registered = localStorage.getItem('appu_student_registered') === 'true';
         setIsStudentRegistered(registered);
-        const savedName = localStorage.getItem('appu_student_name');
-        const savedSchool = localStorage.getItem('appu_student_school');
-        const savedGrade = localStorage.getItem('appu_student_grade');
-        const savedDni = localStorage.getItem('appu_student_dni');
-        const savedPhone = localStorage.getItem('appu_student_phone');
-        const savedTutor = localStorage.getItem('appu_student_tutor');
+        var savedName = localStorage.getItem('appu_student_name');
+        var savedSchool = localStorage.getItem('appu_student_school');
+        var savedGrade = localStorage.getItem('appu_student_grade');
+        var savedDni = localStorage.getItem('appu_student_dni');
+        var savedPhone = localStorage.getItem('appu_student_phone');
+        var savedTutor = localStorage.getItem('appu_student_tutor');
         if (savedName || savedSchool || savedDni || savedPhone) {
-            setStudentForm(prev => ({
-                ...prev,
-                name: savedName || '',
-                school: savedSchool || '',
-                grade: savedGrade || '3° de Secundaria',
-                dni: savedDni || '',
-                phone: savedPhone || '',
-                tutor: savedTutor || '',
-                dataConsent: true
-            }));
+            setStudentForm(function (prev) { return (__assign(__assign({}, prev), { name: savedName || '', school: savedSchool || '', grade: savedGrade || '3° de Secundaria', dni: savedDni || '', phone: savedPhone || '', tutor: savedTutor || '', dataConsent: true })); });
         }
     }, []);
     // Función para re-procesar las fórmulas LaTeX en la pantalla actual
-    const triggerMathJax = () => {
-        setTimeout(() => {
+    var triggerMathJax = function () {
+        setTimeout(function () {
             if (window.MathJax && window.MathJax.typesetPromise) {
                 window.MathJax.typesetPromise()
-                    .catch((err) => console.warn("MathJax typeset error: ", err));
+                    .catch(function (err) { return console.warn("MathJax typeset error: ", err); });
             }
         }, 150);
     };
     // Re-procesar LaTeX cada vez que cambie la vista, pregunta o pestaña del banner
-    useEffect(() => {
+    useEffect(function () {
         triggerMathJax();
     }, [currentView, activeQuestionIndex, examFinished, adminTab, questionForm, activeBannerTab, selectedBannerGrade]);
     // --- AUTENTICACIÓN FIREBASE (REGLA 3) ---
-    useEffect(() => {
-        const initAuth = async () => {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
+    useEffect(function () {
+        var initAuth = function () { return __awaiter(_this, void 0, void 0, function () {
+            var error_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 5, , 6]);
+                        if (!(typeof __initial_auth_token !== 'undefined' && __initial_auth_token)) return [3 /*break*/, 2];
+                        return [4 /*yield*/, signInWithCustomToken(auth, __initial_auth_token)];
+                    case 1:
+                        _a.sent();
+                        return [3 /*break*/, 4];
+                    case 2: return [4 /*yield*/, signInAnonymously(auth)];
+                    case 3:
+                        _a.sent();
+                        _a.label = 4;
+                    case 4: return [3 /*break*/, 6];
+                    case 5:
+                        error_1 = _a.sent();
+                        console.error("Error al autenticar (activando modo local):", error_1);
+                        setIsOfflineMode(true);
+                        showToast("Modo local activado: Sin conexión a base de datos.", "warning");
+                        return [3 /*break*/, 6];
+                    case 6: return [2 /*return*/];
                 }
-                else {
-                    await signInAnonymously(auth);
-                }
-            }
-            catch (error) {
-                console.error("Error al autenticar (activando modo local):", error);
-                setIsOfflineMode(true);
-                showToast("Modo local activado: Sin conexión a base de datos.", "warning");
-            }
-        };
+            });
+        }); };
         if (!firebaseConfig.apiKey || firebaseConfig.apiKey === "AIzaSyDummyKeyForAppuLocalDevOnly") {
             setIsOfflineMode(true);
             setLoadingData(false);
@@ -311,77 +370,98 @@ export default function App() {
         else {
             initAuth();
         }
-        const unsubscribe = onAuthStateChanged(auth, (u) => {
+        var unsubscribe = onAuthStateChanged(auth, function (u) {
             setUser(u);
         });
-        return () => unsubscribe();
+        return function () { return unsubscribe(); };
     }, []);
     // --- CARGA Y SINCRONIZACIÓN DE DATOS CON VERCEL KV ---
-    const saveKVData = async (key, data) => {
-        try {
-            // Guardado local (caché/optimista)
-            localStorage.setItem(`appu_${key}`, JSON.stringify(data));
-            // Guardado remoto (Vercel KV)
-            const response = await fetch('/api/data', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ key, data })
-            });
-            if (!response.ok) {
-                console.error(`Error al guardar ${key} en Vercel KV: HTTP ${response.status}`);
+    var saveKVData = function (key, data) { return __awaiter(_this, void 0, void 0, function () {
+        var response, error_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    // Guardado local (caché/optimista)
+                    localStorage.setItem("appu_".concat(key), JSON.stringify(data));
+                    return [4 /*yield*/, fetch('/api/data', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ key: key, data: data })
+                        })];
+                case 1:
+                    response = _a.sent();
+                    if (!response.ok) {
+                        console.error("Error al guardar ".concat(key, " en Vercel KV: HTTP ").concat(response.status));
+                    }
+                    return [3 /*break*/, 3];
+                case 2:
+                    error_2 = _a.sent();
+                    console.error("Error de red al guardar ".concat(key, " en Vercel KV:"), error_2);
+                    return [3 /*break*/, 3];
+                case 3: return [2 /*return*/];
             }
-        }
-        catch (error) {
-            console.error(`Error de red al guardar ${key} en Vercel KV:`, error);
-        }
-    };
-    const loadKVData = async () => {
-        setLoadingData(true);
-        try {
-            const response = await fetch('/api/data');
-            if (response.ok) {
-                const data = await response.json();
-                const finalExams = data.exams && data.exams.length > 0 ? data.exams : defaultExams;
-                const finalQuestions = data.questions && data.questions.length > 0 ? data.questions : defaultQuestions;
-                const finalResults = data.results || [];
-                setExams(finalExams);
-                setQuestions(finalQuestions);
-                setResults(finalResults);
-                localStorage.setItem('appu_exams', JSON.stringify(finalExams));
-                localStorage.setItem('appu_questions', JSON.stringify(finalQuestions));
-                localStorage.setItem('appu_results', JSON.stringify(finalResults));
+        });
+    }); };
+    var loadKVData = function () { return __awaiter(_this, void 0, void 0, function () {
+        var response, data, finalExams, finalQuestions, finalResults, error_3, storedExams, storedQuestions, storedResults;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    setLoadingData(true);
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 6, 7, 8]);
+                    return [4 /*yield*/, fetch('/api/data')];
+                case 2:
+                    response = _a.sent();
+                    if (!response.ok) return [3 /*break*/, 4];
+                    return [4 /*yield*/, response.json()];
+                case 3:
+                    data = _a.sent();
+                    finalExams = data.exams && data.exams.length > 0 ? data.exams : defaultExams;
+                    finalQuestions = data.questions && data.questions.length > 0 ? data.questions : defaultQuestions;
+                    finalResults = data.results || [];
+                    setExams(finalExams);
+                    setQuestions(finalQuestions);
+                    setResults(finalResults);
+                    localStorage.setItem('appu_exams', JSON.stringify(finalExams));
+                    localStorage.setItem('appu_questions', JSON.stringify(finalQuestions));
+                    localStorage.setItem('appu_results', JSON.stringify(finalResults));
+                    return [3 /*break*/, 5];
+                case 4: throw new Error("Error de servidor: ".concat(response.status));
+                case 5: return [3 /*break*/, 8];
+                case 6:
+                    error_3 = _a.sent();
+                    console.warn("No se pudo conectar con Vercel KV. Usando caché local:", error_3);
+                    storedExams = localStorage.getItem('appu_exams');
+                    storedQuestions = localStorage.getItem('appu_questions');
+                    storedResults = localStorage.getItem('appu_results');
+                    setExams(storedExams ? JSON.parse(storedExams) : defaultExams);
+                    setQuestions(storedQuestions ? JSON.parse(storedQuestions) : defaultQuestions);
+                    setResults(storedResults ? JSON.parse(storedResults) : []);
+                    return [3 /*break*/, 8];
+                case 7:
+                    setLoadingData(false);
+                    triggerMathJax();
+                    return [7 /*endfinally*/];
+                case 8: return [2 /*return*/];
             }
-            else {
-                throw new Error(`Error de servidor: ${response.status}`);
-            }
-        }
-        catch (error) {
-            console.warn("No se pudo conectar con Vercel KV. Usando caché local:", error);
-            const storedExams = localStorage.getItem('appu_exams');
-            const storedQuestions = localStorage.getItem('appu_questions');
-            const storedResults = localStorage.getItem('appu_results');
-            setExams(storedExams ? JSON.parse(storedExams) : defaultExams);
-            setQuestions(storedQuestions ? JSON.parse(storedQuestions) : defaultQuestions);
-            setResults(storedResults ? JSON.parse(storedResults) : []);
-        }
-        finally {
-            setLoadingData(false);
-            triggerMathJax();
-        }
-    };
-    useEffect(() => {
+        });
+    }); };
+    useEffect(function () {
         loadKVData();
     }, []);
     // --- CONTROL DEL TEMPORIZADOR DEL EXAMEN ---
-    useEffect(() => {
+    useEffect(function () {
         if (currentView === 'student-exam' && !examFinished) {
-            const interval = setInterval(() => {
-                setElapsedTime((prev) => prev + 1);
+            var interval_1 = setInterval(function () {
+                setElapsedTime(function (prev) { return prev + 1; });
             }, 1000);
-            setTimerIntervalId(interval);
-            return () => clearInterval(interval);
+            setTimerIntervalId(interval_1);
+            return function () { return clearInterval(interval_1); };
         }
         else {
             if (timerIntervalId) {
@@ -390,44 +470,45 @@ export default function App() {
             }
         }
     }, [currentView, examFinished]);
-    const showToast = (message, type = 'info') => {
-        setToast({ show: true, message, type });
-        setTimeout(() => {
+    var showToast = function (message, type) {
+        if (type === void 0) { type = 'info'; }
+        setToast({ show: true, message: message, type: type });
+        setTimeout(function () {
             setToast({ show: false, message: '', type: 'info' });
         }, 4000);
     };
-    const confirmAction = (title, message, onConfirm) => {
+    var confirmAction = function (title, message, onConfirm) {
         setModalConfirm({
             show: true,
-            title,
-            message,
-            onConfirm: () => {
+            title: title,
+            message: message,
+            onConfirm: function () {
                 onConfirm();
                 setModalConfirm({ show: false, title: '', message: '', onConfirm: null });
             }
         });
     };
-    const handleImageUpload = (file, callback) => {
+    var handleImageUpload = function (file, callback) {
         if (!file)
             return;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const img = new Image();
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                const MAX_WIDTH = 800;
-                let width = img.width;
-                let height = img.height;
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            var img = new Image();
+            img.onload = function () {
+                var canvas = document.createElement('canvas');
+                var MAX_WIDTH = 800;
+                var width = img.width;
+                var height = img.height;
                 if (width > MAX_WIDTH) {
                     height *= MAX_WIDTH / width;
                     width = MAX_WIDTH;
                 }
                 canvas.width = width;
                 canvas.height = height;
-                const ctx = canvas.getContext('2d');
+                var ctx = canvas.getContext('2d');
                 if (ctx) {
                     ctx.drawImage(img, 0, 0, width, height);
-                    const base64Str = canvas.toDataURL('image/jpeg', 0.7);
+                    var base64Str = canvas.toDataURL('image/jpeg', 0.7);
                     callback(base64Str);
                 }
             };
@@ -437,21 +518,21 @@ export default function App() {
         };
         reader.readAsDataURL(file);
     };
-    const handleSelectExam = (exam) => {
-        const examQuestions = questions.filter((q) => q.examId === exam.id);
+    var handleSelectExam = function (exam) {
+        var examQuestions = questions.filter(function (q) { return q.examId === exam.id; });
         if (examQuestions.length === 0) {
             showToast("Este examen aún no contiene preguntas. Por favor, selecciona otro o contacta con el administrador.", "warning");
             return;
         }
         setSelectedExam(exam);
-        const registered = localStorage.getItem('appu_student_registered') === 'true';
+        var registered = localStorage.getItem('appu_student_registered') === 'true';
         if (registered) {
-            const savedName = localStorage.getItem('appu_student_name') || '';
-            const savedSchool = localStorage.getItem('appu_student_school') || '';
-            const savedGrade = localStorage.getItem('appu_student_grade') || '3° de Secundaria';
-            const savedDni = localStorage.getItem('appu_student_dni') || '';
-            const savedPhone = localStorage.getItem('appu_student_phone') || '';
-            const savedTutor = localStorage.getItem('appu_student_tutor') || '';
+            var savedName = localStorage.getItem('appu_student_name') || '';
+            var savedSchool = localStorage.getItem('appu_student_school') || '';
+            var savedGrade = localStorage.getItem('appu_student_grade') || '3° de Secundaria';
+            var savedDni = localStorage.getItem('appu_student_dni') || '';
+            var savedPhone = localStorage.getItem('appu_student_phone') || '';
+            var savedTutor = localStorage.getItem('appu_student_tutor') || '';
             setStudentForm({
                 name: savedName,
                 school: savedSchool,
@@ -468,7 +549,7 @@ export default function App() {
             setElapsedTime(0);
             setShowRankingInResults(false);
             setCurrentView('student-exam');
-            showToast(`¡Bienvenido de nuevo, ${savedName}! Iniciando simulacro.`, "success");
+            showToast("\u00A1Bienvenido de nuevo, ".concat(savedName, "! Iniciando simulacro."), "success");
         }
         else {
             setStudentForm({
@@ -484,7 +565,7 @@ export default function App() {
             setShowStudentRegisterModal(true);
         }
     };
-    const handleRegisterDirect = (source) => {
+    var handleRegisterDirect = function (source) {
         setSelectedExam(null);
         setStudentForm({
             name: '',
@@ -498,88 +579,180 @@ export default function App() {
         });
         setShowStudentRegisterModal(true);
     };
-    const handleExportCSV = () => {
+    var handleExportCSV = function () {
         if (results.length === 0)
             return;
-        const headers = ['Estudiante', 'DNI', 'Teléfono', 'Colegio', 'Grado', 'Tutor', 'Examen', 'Puntaje', 'Etiqueta'];
-        const rows = results.map(res => [
-            `"${res.studentName || ''}"`,
-            `"${res.dni || ''}"`,
-            `"${res.phone || ''}"`,
-            `"${res.school || ''}"`,
-            `"${res.grade || ''}"`,
-            `"${res.tutor || ''}"`,
-            `"${res.examName || ''}"`,
-            `"${res.score || ''}"`,
-            `"${res.tag || '-'}"`
-        ]);
-        const csvContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\\n');
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
+        var headers = ['Estudiante', 'DNI', 'Teléfono', 'Colegio', 'Grado', 'Tutor', 'Examen', 'Puntaje', 'Etiqueta'];
+        var rows = results.map(function (res) { return [
+            "\"".concat(res.studentName || '', "\""),
+            "\"".concat(res.dni || '', "\""),
+            "\"".concat(res.phone || '', "\""),
+            "\"".concat(res.school || '', "\""),
+            "\"".concat(res.grade || '', "\""),
+            "\"".concat(res.tutor || '', "\""),
+            "\"".concat(res.examName || '', "\""),
+            "\"".concat(res.score || '', "\""),
+            "\"".concat(res.tag || '-', "\"")
+        ]; });
+        var csvContent = __spreadArray([headers.join(',')], rows.map(function (row) { return row.join(','); }), true).join('\\n');
+        var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        var url = URL.createObjectURL(blob);
+        var link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', `registro_datos_appu_${new Date().getTime()}.csv`);
+        link.setAttribute('download', "registro_datos_appu_".concat(new Date().getTime(), ".csv"));
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
     };
-    const handleDeleteResult = async (resultId) => {
-        confirmAction("¿Eliminar registro?", "Esta acción eliminará el registro de este estudiante de forma permanente.", async () => {
-            const updatedResults = results.filter(res => res.id !== resultId);
-            setResults(updatedResults);
-            await saveKVData('results', updatedResults);
-            showToast("Registro de estudiante eliminado.", "success");
+    var handleDeleteResult = function (resultId) { return __awaiter(_this, void 0, void 0, function () {
+        var _this = this;
+        return __generator(this, function (_a) {
+            confirmAction("¿Eliminar registro?", "Esta acción eliminará el registro de este estudiante de forma permanente.", function () { return __awaiter(_this, void 0, void 0, function () {
+                var updatedResults;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            updatedResults = results.filter(function (res) { return res.id !== resultId; });
+                            setResults(updatedResults);
+                            return [4 /*yield*/, saveKVData('results', updatedResults)];
+                        case 1:
+                            _a.sent();
+                            showToast("Registro de estudiante eliminado.", "success");
+                            return [2 /*return*/];
+                    }
+                });
+            }); });
+            return [2 /*return*/];
+        });
+    }); };
+    var handleClearAllResults = function () { return __awaiter(_this, void 0, void 0, function () {
+        var _this = this;
+        return __generator(this, function (_a) {
+            confirmAction("¿Limpiar todos los datos?", "¡ATENCIÓN! Se eliminarán de forma permanente todos los registros y resultados de los estudiantes. Esta acción no se puede deshacer.", function () { return __awaiter(_this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            setResults([]);
+                            return [4 /*yield*/, saveKVData('results', [])];
+                        case 1:
+                            _a.sent();
+                            showToast("Todos los registros han sido limpiados.", "success");
+                            return [2 /*return*/];
+                    }
+                });
+            }); });
+            return [2 /*return*/];
+        });
+    }); };
+    var handleStartExamAfterRegister = function (e) { return __awaiter(_this, void 0, void 0, function () {
+        var newResult, updatedResults;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    e.preventDefault();
+                    if (!studentForm.name.trim() || !studentForm.school.trim() || !studentForm.dni.trim() || !studentForm.phone.trim() || !studentForm.grade.trim()) {
+                        showToast("Por favor, completa todos los campos obligatorios del formulario.", "warning");
+                        return [2 /*return*/];
+                    }
+                    if (!studentForm.dataConsent) {
+                        showToast("Debes aceptar el Uso de Datos para continuar.", "warning");
+                        return [2 /*return*/];
+                    }
+                    // Guardar registro localmente para otorgar acceso
+                    localStorage.setItem('appu_student_registered', 'true');
+                    localStorage.setItem('appu_student_name', studentForm.name);
+                    localStorage.setItem('appu_student_school', studentForm.school);
+                    localStorage.setItem('appu_student_grade', studentForm.grade);
+                    localStorage.setItem('appu_student_dni', studentForm.dni);
+                    localStorage.setItem('appu_student_phone', studentForm.phone);
+                    localStorage.setItem('appu_student_tutor', studentForm.tutor);
+                    setIsStudentRegistered(true);
+                    if (!(studentForm.registrationSource !== 'simulacro')) return [3 /*break*/, 2];
+                    newResult = {
+                        id: "res-" + Date.now(),
+                        examId: "N/A",
+                        examName: studentForm.registrationSource === 'concurso' ? 'Inscripción: Concurso de Becas' : 'Inscripción: Reforzamiento',
+                        studentName: studentForm.name,
+                        dni: studentForm.dni,
+                        phone: studentForm.phone,
+                        school: studentForm.school,
+                        grade: studentForm.grade,
+                        tutor: studentForm.tutor || "",
+                        score: "N/A",
+                        createdAt: new Date().toISOString(),
+                        tag: studentForm.registrationSource
+                    };
+                    updatedResults = __spreadArray(__spreadArray([], results, true), [newResult], false);
+                    setResults(updatedResults);
+                    return [4 /*yield*/, saveKVData('results', updatedResults)];
+                case 1:
+                    _a.sent();
+                    setShowStudentRegisterModal(false);
+                    showToast("¡Inscripción exitosa! Nos pondremos en contacto contigo y ya tienes acceso a los simulacros.", "success");
+                    return [2 /*return*/];
+                case 2:
+                    setShowStudentRegisterModal(false);
+                    setStudentAnswers({});
+                    setActiveQuestionIndex(0);
+                    setExamFinished(false);
+                    setElapsedTime(0);
+                    setShowRankingInResults(false);
+                    setCurrentView('student-exam');
+                    return [2 /*return*/];
+            }
+        });
+    }); };
+    var handleSelectOption = function (questionId, optionLetter) {
+        setStudentAnswers(function (prev) {
+            var _a;
+            return (__assign(__assign({}, prev), (_a = {}, _a[questionId] = optionLetter, _a)));
         });
     };
-    const handleClearAllResults = async () => {
-        confirmAction("¿Limpiar todos los datos?", "¡ATENCIÓN! Se eliminarán de forma permanente todos los registros y resultados de los estudiantes. Esta acción no se puede deshacer.", async () => {
-            setResults([]);
-            await saveKVData('results', []);
-            showToast("Todos los registros han sido limpiados.", "success");
-        });
+    var handleFinishExam = function () {
+        confirmAction("¿Finalizar simulacro?", "Se procesarán tus respuestas y verás los resultados de inmediato.", function () { return __awaiter(_this, void 0, void 0, function () {
+            var resultsData, score, maxScore, correct, incorrect, omitted, newResult, updatedResults;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        resultsData = calculateResults();
+                        score = resultsData.score;
+                        maxScore = resultsData.maxScore;
+                        correct = resultsData.correct;
+                        incorrect = resultsData.incorrect;
+                        omitted = resultsData.omitted;
+                        newResult = {
+                            id: "res-" + Date.now(),
+                            examId: (selectedExam === null || selectedExam === void 0 ? void 0 : selectedExam.id) || "",
+                            examName: (selectedExam === null || selectedExam === void 0 ? void 0 : selectedExam.name) || "",
+                            studentName: studentForm.name,
+                            dni: studentForm.dni,
+                            phone: studentForm.phone,
+                            school: studentForm.school,
+                            grade: studentForm.grade,
+                            tutor: studentForm.tutor || "",
+                            score: score,
+                            maxScore: maxScore,
+                            correctCount: correct,
+                            incorrectCount: incorrect,
+                            omittedCount: omitted,
+                            timeSpent: elapsedTime,
+                            createdAt: new Date().toISOString(),
+                            tag: 'simulacro'
+                        };
+                        updatedResults = __spreadArray(__spreadArray([], results, true), [newResult], false);
+                        setResults(updatedResults);
+                        return [4 /*yield*/, saveKVData('results', updatedResults)];
+                    case 1:
+                        _a.sent();
+                        showToast("¡Resultado registrado con éxito!", "success");
+                        setExamFinished(true);
+                        setCurrentView('student-results');
+                        return [2 /*return*/];
+                }
+            });
+        }); });
     };
-    const handleStartExamAfterRegister = async (e) => {
-        e.preventDefault();
-        if (!studentForm.name.trim() || !studentForm.school.trim() || !studentForm.dni.trim() || !studentForm.phone.trim() || !studentForm.grade.trim()) {
-            showToast("Por favor, completa todos los campos obligatorios del formulario.", "warning");
-            return;
-        }
-        if (!studentForm.dataConsent) {
-            showToast("Debes aceptar el Uso de Datos para continuar.", "warning");
-            return;
-        }
-        // Guardar registro localmente para otorgar acceso
-        localStorage.setItem('appu_student_registered', 'true');
-        localStorage.setItem('appu_student_name', studentForm.name);
-        localStorage.setItem('appu_student_school', studentForm.school);
-        localStorage.setItem('appu_student_grade', studentForm.grade);
-        localStorage.setItem('appu_student_dni', studentForm.dni);
-        localStorage.setItem('appu_student_phone', studentForm.phone);
-        localStorage.setItem('appu_student_tutor', studentForm.tutor);
-        setIsStudentRegistered(true);
-        if (studentForm.registrationSource !== 'simulacro') {
-            const newResult = {
-                id: "res-" + Date.now(),
-                examId: "N/A",
-                examName: studentForm.registrationSource === 'concurso' ? 'Inscripción: Concurso de Becas' : 'Inscripción: Reforzamiento',
-                studentName: studentForm.name,
-                dni: studentForm.dni,
-                phone: studentForm.phone,
-                school: studentForm.school,
-                grade: studentForm.grade,
-                tutor: studentForm.tutor || "",
-                score: "N/A",
-                createdAt: new Date().toISOString(),
-                tag: studentForm.registrationSource
-            };
-            const updatedResults = [...results, newResult];
-            setResults(updatedResults);
-            await saveKVData('results', updatedResults);
-            setShowStudentRegisterModal(false);
-            showToast("¡Inscripción exitosa! Nos pondremos en contacto contigo y ya tienes acceso a los simulacros.", "success");
-            return;
-        }
-        setShowStudentRegisterModal(false);
+    var restartExam = function () {
         setStudentAnswers({});
         setActiveQuestionIndex(0);
         setExamFinished(false);
@@ -587,64 +760,15 @@ export default function App() {
         setShowRankingInResults(false);
         setCurrentView('student-exam');
     };
-    const handleSelectOption = (questionId, optionLetter) => {
-        setStudentAnswers((prev) => ({
-            ...prev,
-            [questionId]: optionLetter
-        }));
-    };
-    const handleFinishExam = () => {
-        confirmAction("¿Finalizar simulacro?", "Se procesarán tus respuestas y verás los resultados de inmediato.", async () => {
-            const resultsData = calculateResults();
-            const score = resultsData.score;
-            const maxScore = resultsData.maxScore;
-            const correct = resultsData.correct;
-            const incorrect = resultsData.incorrect;
-            const omitted = resultsData.omitted;
-            const newResult = {
-                id: "res-" + Date.now(),
-                examId: selectedExam?.id || "",
-                examName: selectedExam?.name || "",
-                studentName: studentForm.name,
-                dni: studentForm.dni,
-                phone: studentForm.phone,
-                school: studentForm.school,
-                grade: studentForm.grade,
-                tutor: studentForm.tutor || "",
-                score: score,
-                maxScore: maxScore,
-                correctCount: correct,
-                incorrectCount: incorrect,
-                omittedCount: omitted,
-                timeSpent: elapsedTime,
-                createdAt: new Date().toISOString(),
-                tag: 'simulacro'
-            };
-            const updatedResults = [...results, newResult];
-            setResults(updatedResults);
-            await saveKVData('results', updatedResults);
-            showToast("¡Resultado registrado con éxito!", "success");
-            setExamFinished(true);
-            setCurrentView('student-results');
-        });
-    };
-    const restartExam = () => {
-        setStudentAnswers({});
-        setActiveQuestionIndex(0);
-        setExamFinished(false);
-        setElapsedTime(0);
-        setShowRankingInResults(false);
-        setCurrentView('student-exam');
-    };
-    const activeExamQuestions = selectedExam
-        ? questions.filter((q) => q.examId === selectedExam.id)
+    var activeExamQuestions = selectedExam
+        ? questions.filter(function (q) { return q.examId === selectedExam.id; })
         : [];
-    const calculateResults = () => {
-        let correct = 0;
-        let incorrect = 0;
-        let omitted = 0;
-        activeExamQuestions.forEach((q) => {
-            const studentAns = studentAnswers[q.id];
+    var calculateResults = function () {
+        var correct = 0;
+        var incorrect = 0;
+        var omitted = 0;
+        activeExamQuestions.forEach(function (q) {
+            var studentAns = studentAnswers[q.id];
             if (!studentAns) {
                 omitted++;
             }
@@ -655,12 +779,12 @@ export default function App() {
                 incorrect++;
             }
         });
-        const score = (correct * 10) - (incorrect * 2);
-        const maxScore = activeExamQuestions.length * 10;
-        const percentage = maxScore > 0 ? Math.max(0, Math.round((score / maxScore) * 100)) : 0;
-        return { correct, incorrect, omitted, score, maxScore, percentage };
+        var score = (correct * 10) - (incorrect * 2);
+        var maxScore = activeExamQuestions.length * 10;
+        var percentage = maxScore > 0 ? Math.max(0, Math.round((score / maxScore) * 100)) : 0;
+        return { correct: correct, incorrect: incorrect, omitted: omitted, score: score, maxScore: maxScore, percentage: percentage };
     };
-    const handleAdminLoginSubmit = (e) => {
+    var handleAdminLoginSubmit = function (e) {
         e.preventDefault();
         if (adminPasswordInput === 'appuconcursodebecas2026$') {
             setIsAdminAuthenticated(true);
@@ -673,117 +797,143 @@ export default function App() {
             showToast("Contraseña incorrecta. Inténtelo de nuevo.", "error");
         }
     };
-    const handleAdminLogout = () => {
+    var handleAdminLogout = function () {
         setIsAdminAuthenticated(false);
         setAdminPasswordInput('');
         setCurrentView('student-home');
         showToast("Sesión de administrador finalizada.", "info");
     };
     // --- CARGA DE EXÁMENES DESDE JSON Y CONVERSIÓN DE IMÁGENES A BASE64 ---
-    const handleJsonImport = async (e) => {
-        const file = e.target.files?.[0];
-        if (!file)
-            return;
-        const reader = new FileReader();
-        reader.onload = async (event) => {
-            try {
-                const fileContent = event.target?.result;
-                const data = JSON.parse(fileContent);
-                const examsToImport = Array.isArray(data) ? data : [data];
-                if (examsToImport.length === 0) {
-                    showToast("El archivo JSON está vacío o no es válido.", "error");
-                    return;
-                }
-                for (const item of examsToImport) {
-                    if (!item.name) {
-                        showToast("Cada examen debe tener al menos un campo 'name'.", "error");
-                        return;
-                    }
-                }
-                let importedCount = 0;
-                let questionsCount = 0;
-                let updatedExams = [...exams];
-                let updatedQuestions = [...questions];
-                for (const examData of examsToImport) {
-                    const newExamId = "exam-" + Date.now() + "-" + Math.random().toString(36).substr(2, 5);
-                    const newExam = {
-                        id: newExamId,
-                        name: examData.name,
-                        description: examData.description || "",
-                        createdAt: new Date().toISOString()
-                    };
-                    updatedExams.push(newExam);
-                    importedCount++;
-                    if (Array.isArray(examData.questions)) {
-                        examData.questions.forEach((qData, idx) => {
-                            const imgVal = qData.imageUrl || "";
-                            const imgType = qData.imageType || (imgVal ? (imgVal.startsWith('data:') ? 'file' : 'url') : 'none');
-                            const solImgVal = qData.solutionImageUrl || "";
-                            const solImgType = qData.solutionImageType || (solImgVal ? (solImgVal.startsWith('data:') ? 'file' : 'url') : 'none');
-                            const newQuestion = {
-                                id: "q-" + Date.now() + "-" + Math.random().toString(36).substr(2, 5),
-                                examId: newExamId,
-                                text: qData.text || "Pregunta sin texto",
-                                imageType: imgType,
-                                imageUrl: imgVal,
-                                options: {
-                                    A: qData.options?.A || "",
-                                    B: qData.options?.B || "",
-                                    C: qData.options?.C || "",
-                                    D: qData.options?.D || "",
-                                    E: qData.options?.E || ""
-                                },
-                                correctOption: qData.correctOption || "A",
-                                solutionText: qData.solutionText || "",
-                                solutionImageType: solImgType,
-                                solutionImageUrl: solImgVal,
-                                order: qData.order !== undefined ? Number(qData.order) : idx + 1,
-                                createdAt: new Date().toISOString()
+    var handleJsonImport = function (e) { return __awaiter(_this, void 0, void 0, function () {
+        var file, reader;
+        var _this = this;
+        var _a;
+        return __generator(this, function (_b) {
+            file = (_a = e.target.files) === null || _a === void 0 ? void 0 : _a[0];
+            if (!file)
+                return [2 /*return*/];
+            reader = new FileReader();
+            reader.onload = function (event) { return __awaiter(_this, void 0, void 0, function () {
+                var fileContent, data, examsToImport, _i, examsToImport_1, item, importedCount, questionsCount_1, updatedExams, updatedQuestions_1, _loop_1, _a, examsToImport_2, examData, err_1;
+                var _b;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            _c.trys.push([0, 3, , 4]);
+                            fileContent = (_b = event.target) === null || _b === void 0 ? void 0 : _b.result;
+                            data = JSON.parse(fileContent);
+                            examsToImport = Array.isArray(data) ? data : [data];
+                            if (examsToImport.length === 0) {
+                                showToast("El archivo JSON está vacío o no es válido.", "error");
+                                return [2 /*return*/];
+                            }
+                            for (_i = 0, examsToImport_1 = examsToImport; _i < examsToImport_1.length; _i++) {
+                                item = examsToImport_1[_i];
+                                if (!item.name) {
+                                    showToast("Cada examen debe tener al menos un campo 'name'.", "error");
+                                    return [2 /*return*/];
+                                }
+                            }
+                            importedCount = 0;
+                            questionsCount_1 = 0;
+                            updatedExams = __spreadArray([], exams, true);
+                            updatedQuestions_1 = __spreadArray([], questions, true);
+                            _loop_1 = function (examData) {
+                                var newExamId = "exam-" + Date.now() + "-" + Math.random().toString(36).substr(2, 5);
+                                var newExam = {
+                                    id: newExamId,
+                                    name: examData.name,
+                                    description: examData.description || "",
+                                    createdAt: new Date().toISOString()
+                                };
+                                updatedExams.push(newExam);
+                                importedCount++;
+                                if (Array.isArray(examData.questions)) {
+                                    examData.questions.forEach(function (qData, idx) {
+                                        var _a, _b, _c, _d, _e;
+                                        var imgVal = qData.imageUrl || "";
+                                        var imgType = qData.imageType || (imgVal ? (imgVal.startsWith('data:') ? 'file' : 'url') : 'none');
+                                        var solImgVal = qData.solutionImageUrl || "";
+                                        var solImgType = qData.solutionImageType || (solImgVal ? (solImgVal.startsWith('data:') ? 'file' : 'url') : 'none');
+                                        var newQuestion = {
+                                            id: "q-" + Date.now() + "-" + Math.random().toString(36).substr(2, 5),
+                                            examId: newExamId,
+                                            text: qData.text || "Pregunta sin texto",
+                                            imageType: imgType,
+                                            imageUrl: imgVal,
+                                            options: {
+                                                A: ((_a = qData.options) === null || _a === void 0 ? void 0 : _a.A) || "",
+                                                B: ((_b = qData.options) === null || _b === void 0 ? void 0 : _b.B) || "",
+                                                C: ((_c = qData.options) === null || _c === void 0 ? void 0 : _c.C) || "",
+                                                D: ((_d = qData.options) === null || _d === void 0 ? void 0 : _d.D) || "",
+                                                E: ((_e = qData.options) === null || _e === void 0 ? void 0 : _e.E) || ""
+                                            },
+                                            correctOption: qData.correctOption || "A",
+                                            solutionText: qData.solutionText || "",
+                                            solutionImageType: solImgType,
+                                            solutionImageUrl: solImgVal,
+                                            order: qData.order !== undefined ? Number(qData.order) : idx + 1,
+                                            createdAt: new Date().toISOString()
+                                        };
+                                        updatedQuestions_1.push(newQuestion);
+                                        questionsCount_1++;
+                                    });
+                                }
                             };
-                            updatedQuestions.push(newQuestion);
-                            questionsCount++;
-                        });
+                            for (_a = 0, examsToImport_2 = examsToImport; _a < examsToImport_2.length; _a++) {
+                                examData = examsToImport_2[_a];
+                                _loop_1(examData);
+                            }
+                            setExams(updatedExams);
+                            setQuestions(updatedQuestions_1);
+                            return [4 /*yield*/, saveKVData('exams', updatedExams)];
+                        case 1:
+                            _c.sent();
+                            return [4 /*yield*/, saveKVData('questions', updatedQuestions_1)];
+                        case 2:
+                            _c.sent();
+                            showToast("Importaci\u00F3n exitosa: ".concat(importedCount, " examen(es) y ").concat(questionsCount_1, " pregunta(s)."), "success");
+                            if (e.target)
+                                e.target.value = '';
+                            triggerMathJax();
+                            return [3 /*break*/, 4];
+                        case 3:
+                            err_1 = _c.sent();
+                            console.error("Error al procesar el archivo JSON:", err_1);
+                            showToast("Error al procesar el archivo JSON. Verifique el formato.", "error");
+                            return [3 /*break*/, 4];
+                        case 4: return [2 /*return*/];
                     }
-                }
-                setExams(updatedExams);
-                setQuestions(updatedQuestions);
-                await saveKVData('exams', updatedExams);
-                await saveKVData('questions', updatedQuestions);
-                showToast(`Importación exitosa: ${importedCount} examen(es) y ${questionsCount} pregunta(s).`, "success");
-                if (e.target)
-                    e.target.value = '';
-                triggerMathJax();
-            }
-            catch (err) {
-                console.error("Error al procesar el archivo JSON:", err);
-                showToast("Error al procesar el archivo JSON. Verifique el formato.", "error");
-            }
-        };
-        reader.readAsText(file);
-    };
-    const handleConverterImageUpload = (e) => {
-        const file = e.target.files?.[0];
+                });
+            }); };
+            reader.readAsText(file);
+            return [2 /*return*/];
+        });
+    }); };
+    var handleConverterImageUpload = function (e) {
+        var _a;
+        var file = (_a = e.target.files) === null || _a === void 0 ? void 0 : _a[0];
         if (!file)
             return;
         setConverterFileName(file.name);
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            const img = new Image();
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                const MAX_WIDTH = 800;
-                let width = img.width;
-                let height = img.height;
+        var reader = new FileReader();
+        reader.onload = function (event) {
+            var img = new Image();
+            img.onload = function () {
+                var canvas = document.createElement('canvas');
+                var MAX_WIDTH = 800;
+                var width = img.width;
+                var height = img.height;
                 if (width > MAX_WIDTH) {
                     height *= MAX_WIDTH / width;
                     width = MAX_WIDTH;
                 }
                 canvas.width = width;
                 canvas.height = height;
-                const ctx = canvas.getContext('2d');
+                var ctx = canvas.getContext('2d');
                 if (ctx) {
                     ctx.drawImage(img, 0, 0, width, height);
-                    const base64Str = canvas.toDataURL('image/jpeg', 0.7);
+                    var base64Str = canvas.toDataURL('image/jpeg', 0.7);
                     setConverterBase64Result(base64Str);
                     showToast("Imagen convertida a Base64 con éxito.", "success");
                 }
@@ -794,121 +944,151 @@ export default function App() {
         };
         reader.readAsDataURL(file);
     };
-    const handleCopyBase64 = () => {
+    var handleCopyBase64 = function () {
         if (!converterBase64Result)
             return;
         navigator.clipboard.writeText(converterBase64Result)
-            .then(() => showToast("¡Código Base64 copiado al portapapeles!", "success"))
-            .catch(() => showToast("No se pudo copiar el código al portapapeles.", "error"));
+            .then(function () { return showToast("¡Código Base64 copiado al portapapeles!", "success"); })
+            .catch(function () { return showToast("No se pudo copiar el código al portapapeles.", "error"); });
     };
-    const handleSaveExam = async (e) => {
-        e.preventDefault();
-        if (!examForm.name.trim()) {
-            showToast("El nombre del examen es obligatorio", "error");
-            return;
-        }
-        let updatedExams = [...exams];
-        if (examForm.id) {
-            updatedExams = updatedExams.map(ex => ex.id === examForm.id ? { ...ex, name: examForm.name, description: examForm.description, updatedAt: new Date().toISOString() } : ex);
-            showToast("Examen actualizado correctamente.", "success");
-        }
-        else {
-            const newExam = {
-                id: "exam-" + Date.now(),
-                name: examForm.name,
-                description: examForm.description,
-                createdAt: new Date().toISOString()
-            };
-            updatedExams.push(newExam);
-            showToast("Examen creado con éxito.", "success");
-        }
-        setExams(updatedExams);
-        await saveKVData('exams', updatedExams);
-        setExamForm({ id: null, name: '', description: '' });
-    };
-    const handleEditExam = (exam) => {
+    var handleSaveExam = function (e) { return __awaiter(_this, void 0, void 0, function () {
+        var updatedExams, newExam;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    e.preventDefault();
+                    if (!examForm.name.trim()) {
+                        showToast("El nombre del examen es obligatorio", "error");
+                        return [2 /*return*/];
+                    }
+                    updatedExams = __spreadArray([], exams, true);
+                    if (examForm.id) {
+                        updatedExams = updatedExams.map(function (ex) { return ex.id === examForm.id ? __assign(__assign({}, ex), { name: examForm.name, description: examForm.description, updatedAt: new Date().toISOString() }) : ex; });
+                        showToast("Examen actualizado correctamente.", "success");
+                    }
+                    else {
+                        newExam = {
+                            id: "exam-" + Date.now(),
+                            name: examForm.name,
+                            description: examForm.description,
+                            createdAt: new Date().toISOString()
+                        };
+                        updatedExams.push(newExam);
+                        showToast("Examen creado con éxito.", "success");
+                    }
+                    setExams(updatedExams);
+                    return [4 /*yield*/, saveKVData('exams', updatedExams)];
+                case 1:
+                    _a.sent();
+                    setExamForm({ id: null, name: '', description: '' });
+                    return [2 /*return*/];
+            }
+        });
+    }); };
+    var handleEditExam = function (exam) {
         setExamForm({
             id: exam.id,
             name: exam.name,
             description: exam.description || ''
         });
     };
-    const handleDeleteExam = async (examId) => {
-        confirmAction("¿Eliminar Examen?", "Se eliminará el examen y perderás la agrupación de sus preguntas de manera permanente.", async () => {
-            const updatedExams = exams.filter(ex => ex.id !== examId);
-            const updatedQuestions = questions.map(q => q.examId === examId ? { ...q, examId: '' } : q);
-            setExams(updatedExams);
-            setQuestions(updatedQuestions);
-            await saveKVData('exams', updatedExams);
-            await saveKVData('questions', updatedQuestions);
-            showToast("Examen eliminado y preguntas desvinculadas.", "info");
-            if (examForm.id === examId) {
-                setExamForm({ id: null, name: '', description: '' });
+    var handleDeleteExam = function (examId) { return __awaiter(_this, void 0, void 0, function () {
+        var _this = this;
+        return __generator(this, function (_a) {
+            confirmAction("¿Eliminar Examen?", "Se eliminará el examen y perderás la agrupación de sus preguntas de manera permanente.", function () { return __awaiter(_this, void 0, void 0, function () {
+                var updatedExams, updatedQuestions;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            updatedExams = exams.filter(function (ex) { return ex.id !== examId; });
+                            updatedQuestions = questions.map(function (q) { return q.examId === examId ? __assign(__assign({}, q), { examId: '' }) : q; });
+                            setExams(updatedExams);
+                            setQuestions(updatedQuestions);
+                            return [4 /*yield*/, saveKVData('exams', updatedExams)];
+                        case 1:
+                            _a.sent();
+                            return [4 /*yield*/, saveKVData('questions', updatedQuestions)];
+                        case 2:
+                            _a.sent();
+                            showToast("Examen eliminado y preguntas desvinculadas.", "info");
+                            if (examForm.id === examId) {
+                                setExamForm({ id: null, name: '', description: '' });
+                            }
+                            return [2 /*return*/];
+                    }
+                });
+            }); });
+            return [2 /*return*/];
+        });
+    }); };
+    var handleSaveQuestion = function (e) { return __awaiter(_this, void 0, void 0, function () {
+        var questionData, updatedQuestions, newQuestion;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    e.preventDefault();
+                    if (!questionForm.examId) {
+                        showToast("Debes vincular esta pregunta a un examen.", "error");
+                        return [2 /*return*/];
+                    }
+                    if (!questionForm.text.trim()) {
+                        showToast("El enunciado de la pregunta es obligatorio.", "error");
+                        return [2 /*return*/];
+                    }
+                    questionData = {
+                        examId: questionForm.examId,
+                        text: questionForm.text,
+                        imageType: questionForm.imageType,
+                        imageUrl: questionForm.imageUrl,
+                        options: {
+                            A: questionForm.options.A || '',
+                            B: questionForm.options.B || '',
+                            C: questionForm.options.C || '',
+                            D: questionForm.options.D || '',
+                            E: questionForm.options.E || ''
+                        },
+                        correctOption: questionForm.correctOption,
+                        solutionText: questionForm.solutionText,
+                        solutionImageType: questionForm.solutionImageType,
+                        solutionImageUrl: questionForm.solutionImageUrl,
+                        order: Number(questionForm.order) || 0,
+                        updatedAt: new Date().toISOString()
+                    };
+                    updatedQuestions = __spreadArray([], questions, true);
+                    if (questionForm.id) {
+                        updatedQuestions = updatedQuestions.map(function (q) { return q.id === questionForm.id ? __assign(__assign({}, q), questionData) : q; });
+                        showToast("Pregunta actualizada exitosamente.", "success");
+                    }
+                    else {
+                        newQuestion = __assign(__assign({ id: "q-" + Date.now() }, questionData), { createdAt: new Date().toISOString() });
+                        updatedQuestions.push(newQuestion);
+                        showToast("Pregunta añadida correctamente.", "success");
+                    }
+                    updatedQuestions.sort(function (a, b) { return (a.order || 0) - (b.order || 0); });
+                    setQuestions(updatedQuestions);
+                    return [4 /*yield*/, saveKVData('questions', updatedQuestions)];
+                case 1:
+                    _a.sent();
+                    setQuestionForm({
+                        id: null,
+                        examId: questionForm.examId,
+                        text: '',
+                        imageType: 'none',
+                        imageUrl: '',
+                        options: { A: '', B: '', C: '', D: '', E: '' },
+                        correctOption: 'A',
+                        solutionText: '',
+                        solutionImageType: 'none',
+                        solutionImageUrl: '',
+                        order: (Number(questionForm.order) || 0) + 1
+                    });
+                    triggerMathJax();
+                    return [2 /*return*/];
             }
         });
-    };
-    const handleSaveQuestion = async (e) => {
-        e.preventDefault();
-        if (!questionForm.examId) {
-            showToast("Debes vincular esta pregunta a un examen.", "error");
-            return;
-        }
-        if (!questionForm.text.trim()) {
-            showToast("El enunciado de la pregunta es obligatorio.", "error");
-            return;
-        }
-        const questionData = {
-            examId: questionForm.examId,
-            text: questionForm.text,
-            imageType: questionForm.imageType,
-            imageUrl: questionForm.imageUrl,
-            options: {
-                A: questionForm.options.A || '',
-                B: questionForm.options.B || '',
-                C: questionForm.options.C || '',
-                D: questionForm.options.D || '',
-                E: questionForm.options.E || ''
-            },
-            correctOption: questionForm.correctOption,
-            solutionText: questionForm.solutionText,
-            solutionImageType: questionForm.solutionImageType,
-            solutionImageUrl: questionForm.solutionImageUrl,
-            order: Number(questionForm.order) || 0,
-            updatedAt: new Date().toISOString()
-        };
-        let updatedQuestions = [...questions];
-        if (questionForm.id) {
-            updatedQuestions = updatedQuestions.map(q => q.id === questionForm.id ? { ...q, ...questionData } : q);
-            showToast("Pregunta actualizada exitosamente.", "success");
-        }
-        else {
-            const newQuestion = {
-                id: "q-" + Date.now(),
-                ...questionData,
-                createdAt: new Date().toISOString()
-            };
-            updatedQuestions.push(newQuestion);
-            showToast("Pregunta añadida correctamente.", "success");
-        }
-        updatedQuestions.sort((a, b) => (a.order || 0) - (b.order || 0));
-        setQuestions(updatedQuestions);
-        await saveKVData('questions', updatedQuestions);
-        setQuestionForm({
-            id: null,
-            examId: questionForm.examId,
-            text: '',
-            imageType: 'none',
-            imageUrl: '',
-            options: { A: '', B: '', C: '', D: '', E: '' },
-            correctOption: 'A',
-            solutionText: '',
-            solutionImageType: 'none',
-            solutionImageUrl: '',
-            order: (Number(questionForm.order) || 0) + 1
-        });
-        triggerMathJax();
-    };
-    const handleEditQuestion = (q) => {
+    }); };
+    var handleEditQuestion = function (q) {
+        var _a, _b, _c, _d, _e, _f;
         setQuestionForm({
             id: q.id,
             examId: q.examId || '',
@@ -916,11 +1096,11 @@ export default function App() {
             imageType: q.imageType || 'none',
             imageUrl: q.imageUrl || '',
             options: {
-                A: q.options?.A || '',
-                B: q.options?.B || '',
-                C: q.options?.C || '',
-                D: q.options?.D || '',
-                E: q.options?.E || ''
+                A: ((_a = q.options) === null || _a === void 0 ? void 0 : _a.A) || '',
+                B: ((_b = q.options) === null || _b === void 0 ? void 0 : _b.B) || '',
+                C: ((_c = q.options) === null || _c === void 0 ? void 0 : _c.C) || '',
+                D: ((_d = q.options) === null || _d === void 0 ? void 0 : _d.D) || '',
+                E: ((_e = q.options) === null || _e === void 0 ? void 0 : _e.E) || ''
             },
             correctOption: q.correctOption || 'A',
             solutionText: q.solutionText || '',
@@ -928,117 +1108,110 @@ export default function App() {
             solutionImageUrl: q.solutionImageUrl || '',
             order: q.order || 0
         });
-        document.getElementById('question-form-section')?.scrollIntoView({ behavior: 'smooth' });
+        (_f = document.getElementById('question-form-section')) === null || _f === void 0 ? void 0 : _f.scrollIntoView({ behavior: 'smooth' });
         triggerMathJax();
     };
-    const handleDeleteQuestion = async (qId) => {
-        confirmAction("¿Eliminar Pregunta?", "Esta acción es irreversible y eliminará la pregunta del simulacro.", async () => {
-            const updatedQuestions = questions.filter(q => q.id !== qId);
-            setQuestions(updatedQuestions);
-            await saveKVData('questions', updatedQuestions);
-            showToast("Pregunta eliminada.", "info");
-            if (questionForm.id === qId) {
-                setQuestionForm(prev => ({ ...prev, id: null }));
+    var handleDeleteQuestion = function (qId) { return __awaiter(_this, void 0, void 0, function () {
+        var _this = this;
+        return __generator(this, function (_a) {
+            confirmAction("¿Eliminar Pregunta?", "Esta acción es irreversible y eliminará la pregunta del simulacro.", function () { return __awaiter(_this, void 0, void 0, function () {
+                var updatedQuestions;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            updatedQuestions = questions.filter(function (q) { return q.id !== qId; });
+                            setQuestions(updatedQuestions);
+                            return [4 /*yield*/, saveKVData('questions', updatedQuestions)];
+                        case 1:
+                            _a.sent();
+                            showToast("Pregunta eliminada.", "info");
+                            if (questionForm.id === qId) {
+                                setQuestionForm(function (prev) { return (__assign(__assign({}, prev), { id: null })); });
+                            }
+                            return [2 /*return*/];
+                    }
+                });
+            }); });
+            return [2 /*return*/];
+        });
+    }); };
+    var handleShiftQuestionOrder = function (questionIndex, direction) { return __awaiter(_this, void 0, void 0, function () {
+        var examQuestionsFiltered, q1, q2, tempOrder, updatedQuestions;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    examQuestionsFiltered = questions.filter(function (q) { return q.examId === selectedAdminExamId; });
+                    if (questionIndex + direction < 0 || questionIndex + direction >= examQuestionsFiltered.length)
+                        return [2 /*return*/];
+                    q1 = examQuestionsFiltered[questionIndex];
+                    q2 = examQuestionsFiltered[questionIndex + direction];
+                    tempOrder = q1.order || 0;
+                    updatedQuestions = questions.map(function (q) {
+                        if (q.id === q1.id)
+                            return __assign(__assign({}, q), { order: q2.order || 0 });
+                        if (q.id === q2.id)
+                            return __assign(__assign({}, q), { order: tempOrder });
+                        return q;
+                    });
+                    updatedQuestions.sort(function (a, b) { return (a.order || 0) - (b.order || 0); });
+                    setQuestions(updatedQuestions);
+                    return [4 /*yield*/, saveKVData('questions', updatedQuestions)];
+                case 1:
+                    _a.sent();
+                    showToast("Orden actualizado.", "success");
+                    return [2 /*return*/];
             }
         });
-    };
-    const handleShiftQuestionOrder = async (questionIndex, direction) => {
-        const examQuestionsFiltered = questions.filter((q) => q.examId === selectedAdminExamId);
-        if (questionIndex + direction < 0 || questionIndex + direction >= examQuestionsFiltered.length)
-            return;
-        const q1 = examQuestionsFiltered[questionIndex];
-        const q2 = examQuestionsFiltered[questionIndex + direction];
-        const tempOrder = q1.order || 0;
-        const updatedQuestions = questions.map(q => {
-            if (q.id === q1.id)
-                return { ...q, order: q2.order || 0 };
-            if (q.id === q2.id)
-                return { ...q, order: tempOrder };
-            return q;
-        });
-        updatedQuestions.sort((a, b) => (a.order || 0) - (b.order || 0));
-        setQuestions(updatedQuestions);
-        await saveKVData('questions', updatedQuestions);
-        showToast("Orden actualizado.", "success");
-    };
-    const formatTime = (totalSeconds) => {
-        const minutes = Math.floor(totalSeconds / 60);
-        const seconds = totalSeconds % 60;
-        return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }); };
+    var formatTime = function (totalSeconds) {
+        var minutes = Math.floor(totalSeconds / 60);
+        var seconds = totalSeconds % 60;
+        return "".concat(minutes.toString().padStart(2, '0'), ":").concat(seconds.toString().padStart(2, '0'));
     };
     // --- CÁLCULO DE RANKINGS DINÁMICOS ---
-    const getGeneralRanking = () => {
-        return [...results]
-            .sort((a, b) => {
+    var getGeneralRanking = function () {
+        return __spreadArray([], results, true).sort(function (a, b) {
             if (b.score !== a.score)
                 return b.score - a.score;
             return a.timeSpent - b.timeSpent;
         })
             .slice(0, 10);
     };
-    const getRankingsByGroup = (field, n) => {
-        const groups = {};
-        results.forEach(res => {
-            const val = (res[field] || '').trim();
+    var getRankingsByGroup = function (field, n) {
+        var groups = {};
+        results.forEach(function (res) {
+            var val = (res[field] || '').trim();
             if (!val)
                 return;
             if (!groups[val])
                 groups[val] = [];
             groups[val].push(res);
         });
-        const groupedRankings = [];
-        Object.keys(groups).forEach(name => {
-            const topResults = groups[name]
-                .sort((a, b) => {
+        var groupedRankings = [];
+        Object.keys(groups).forEach(function (name) {
+            var topResults = groups[name]
+                .sort(function (a, b) {
                 if (b.score !== a.score)
                     return b.score - a.score;
                 return a.timeSpent - b.timeSpent;
             })
                 .slice(0, n);
-            groupedRankings.push({ name, topResults });
+            groupedRankings.push({ name: name, topResults: topResults });
         });
-        return groupedRankings.sort((a, b) => a.name.localeCompare(b.name));
+        return groupedRankings.sort(function (a, b) { return a.name.localeCompare(b.name); });
     };
-    const filteredAdminQuestions = questions.filter((q) => {
-        const matchesExam = selectedAdminExamId === 'all' || q.examId === selectedAdminExamId;
-        const matchesSearch = q.text.toLowerCase().includes(searchQuestionQuery.toLowerCase()) ||
-            Object.values(q.options || {}).some((o) => typeof o === 'string' && o.toLowerCase().includes(searchQuestionQuery.toLowerCase()));
+    var filteredAdminQuestions = questions.filter(function (q) {
+        var matchesExam = selectedAdminExamId === 'all' || q.examId === selectedAdminExamId;
+        var matchesSearch = q.text.toLowerCase().includes(searchQuestionQuery.toLowerCase()) ||
+            Object.values(q.options || {}).some(function (o) {
+                return typeof o === 'string' && o.toLowerCase().includes(searchQuestionQuery.toLowerCase());
+            });
         return matchesExam && matchesSearch;
     });
     return (<div className="min-h-screen bg-slate-50 text-slate-800 font-sans flex flex-col antialiased">
       
       {/* CSS embebido para animaciones premium fluidas en el banner dinámico */}
-      <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(4px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in {
-          animation: fadeIn 0.25s ease-out forwards;
-        }
-        @keyframes floatSeal {
-          0%, 100% { transform: translateY(0px) rotate(12deg); }
-          50% { transform: translateY(-6px) rotate(8deg); }
-        }
-        .animate-float-seal {
-          animation: floatSeal 4s ease-in-out infinite;
-        }
-        @keyframes floatGentle {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-5px); }
-        }
-        .animate-float-gentle {
-          animation: floatGentle 6s ease-in-out infinite;
-        }
-        .hover-card-trigger {
-          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .hover-card-trigger:hover {
-          transform: translateY(-6px);
-          box-shadow: 0 16px 32px -10px rgba(15, 44, 89, 0.15);
-          border-color: rgba(99, 102, 241, 0.35);
-        }
-      `}</style>
+      <style>{"\n        @keyframes fadeIn {\n          from { opacity: 0; transform: translateY(4px); }\n          to { opacity: 1; transform: translateY(0); }\n        }\n        .animate-fade-in {\n          animation: fadeIn 0.25s ease-out forwards;\n        }\n        @keyframes floatSeal {\n          0%, 100% { transform: translateY(0px) rotate(12deg); }\n          50% { transform: translateY(-6px) rotate(8deg); }\n        }\n        .animate-float-seal {\n          animation: floatSeal 4s ease-in-out infinite;\n        }\n        @keyframes floatGentle {\n          0%, 100% { transform: translateY(0px); }\n          50% { transform: translateY(-5px); }\n        }\n        .animate-float-gentle {\n          animation: floatGentle 6s ease-in-out infinite;\n        }\n        .hover-card-trigger {\n          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);\n        }\n        .hover-card-trigger:hover {\n          transform: translateY(-6px);\n          box-shadow: 0 16px 32px -10px rgba(15, 44, 89, 0.15);\n          border-color: rgba(99, 102, 241, 0.35);\n        }\n      "}</style>
 
       {/* --- TOAST NOTIFICATION --- */}
       {toast.show && (<div className="fixed top-5 right-5 z-50 flex items-center p-4 rounded-xl shadow-2xl transition-all duration-300 bg-white border-l-4 border-violet-600 animate-bounce">
@@ -1070,19 +1243,19 @@ export default function App() {
             <form onSubmit={handleStartExamAfterRegister} className="space-y-4">
               <div>
                 <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider">Nombre Completo</label>
-                <input type="text" placeholder="Ej. Juan Pérez Quispe" value={studentForm.name} onChange={(e) => setStudentForm({ ...studentForm, name: e.target.value })} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 focus:outline-none text-sm font-semibold text-slate-800" required autoFocus/>
+                <input type="text" placeholder="Ej. Juan Pérez Quispe" value={studentForm.name} onChange={function (e) { return setStudentForm(__assign(__assign({}, studentForm), { name: e.target.value })); }} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 focus:outline-none text-sm font-semibold text-slate-800" required autoFocus/>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider">Colegio de Procedencia</label>
-                  <input type="text" placeholder="Ej. I.E. Jorge Basadre" value={studentForm.school} onChange={(e) => setStudentForm({ ...studentForm, school: e.target.value })} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 focus:outline-none text-sm font-semibold text-slate-800" required/>
+                  <input type="text" placeholder="Ej. I.E. Jorge Basadre" value={studentForm.school} onChange={function (e) { return setStudentForm(__assign(__assign({}, studentForm), { school: e.target.value })); }} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 focus:outline-none text-sm font-semibold text-slate-800" required/>
                 </div>
 
                 <div>
                   <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider">Grado Escolar</label>
-                  <select value={studentForm.grade} onChange={(e) => setStudentForm({ ...studentForm, grade: e.target.value })} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 focus:outline-none text-sm font-bold text-slate-800 bg-white">
-                    {['1° de Secundaria', '2° de Secundaria', '3° de Secundaria', '4° de Secundaria', '5° de Secundaria'].map(g => (<option key={g} value={g}>{g}</option>))}
+                  <select value={studentForm.grade} onChange={function (e) { return setStudentForm(__assign(__assign({}, studentForm), { grade: e.target.value })); }} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 focus:outline-none text-sm font-bold text-slate-800 bg-white">
+                    {['1° de Secundaria', '2° de Secundaria', '3° de Secundaria', '4° de Secundaria', '5° de Secundaria'].map(function (g) { return (<option key={g} value={g}>{g}</option>); })}
                   </select>
                 </div>
               </div>
@@ -1090,25 +1263,25 @@ export default function App() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider">DNI</label>
-                  <input type="text" placeholder="Ej. 76543210" value={studentForm.dni} onChange={(e) => setStudentForm({ ...studentForm, dni: e.target.value })} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 focus:outline-none text-sm font-semibold text-slate-800" required/>
+                  <input type="text" placeholder="Ej. 76543210" value={studentForm.dni} onChange={function (e) { return setStudentForm(__assign(__assign({}, studentForm), { dni: e.target.value })); }} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 focus:outline-none text-sm font-semibold text-slate-800" required/>
                 </div>
                 <div>
                   <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1 tracking-wider">Teléfono de Contacto</label>
-                  <input type="text" placeholder="Ej. 987654321" value={studentForm.phone} onChange={(e) => setStudentForm({ ...studentForm, phone: e.target.value })} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 focus:outline-none text-sm font-semibold text-slate-800" required/>
+                  <input type="text" placeholder="Ej. 987654321" value={studentForm.phone} onChange={function (e) { return setStudentForm(__assign(__assign({}, studentForm), { phone: e.target.value })); }} className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-violet-500 focus:outline-none text-sm font-semibold text-slate-800" required/>
                 </div>
               </div>
 
 
 
               <div className="flex items-start mt-4">
-                <input type="checkbox" id="dataConsent" checked={studentForm.dataConsent} onChange={(e) => setStudentForm({ ...studentForm, dataConsent: e.target.checked })} className="mt-1 h-4 w-4 text-violet-600 focus:ring-violet-500 border-slate-300 rounded" required/>
+                <input type="checkbox" id="dataConsent" checked={studentForm.dataConsent} onChange={function (e) { return setStudentForm(__assign(__assign({}, studentForm), { dataConsent: e.target.checked })); }} className="mt-1 h-4 w-4 text-violet-600 focus:ring-violet-500 border-slate-300 rounded" required/>
                 <label htmlFor="dataConsent" className="ml-2 block text-[11px] text-slate-600 leading-tight">
                   <span className="font-bold">Uso de Datos:</span> Autorizo a APPU a tratar los datos consignados para enviarme informes de resultados, ciclos de interés, asesoría y el seguimiento de sus simulacros. También acepto recibir promociones, descuentos y nuevos inicios de clases por WhatsApp, llamadas o SMS.
                 </label>
               </div>
 
               <div className="flex justify-end space-x-3 pt-4 border-t border-slate-100">
-                <button type="button" onClick={() => {
+                <button type="button" onClick={function () {
                 setShowStudentRegisterModal(false);
                 setSelectedExam(null);
             }} className="px-5 py-2.5 border border-slate-200 text-slate-700 rounded-xl hover:bg-slate-50 transition text-xs font-semibold">
@@ -1129,10 +1302,10 @@ export default function App() {
             <p className="text-xs text-slate-500 mb-4">Ingresa la clave de administración para gestionar preguntas, exámenes y ver solucionarios.</p>
             
             <form onSubmit={handleAdminLoginSubmit} className="space-y-4">
-              <input type="password" placeholder="Contraseña de Administrador" value={adminPasswordInput} onChange={(e) => setAdminPasswordInput(e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:outline-none text-sm font-semibold" autoFocus/>
+              <input type="password" placeholder="Contraseña de Administrador" value={adminPasswordInput} onChange={function (e) { return setAdminPasswordInput(e.target.value); }} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:outline-none text-sm font-semibold" autoFocus/>
               
               <div className="flex justify-end space-x-3 pt-2">
-                <button type="button" onClick={() => {
+                <button type="button" onClick={function () {
                 setShowAdminLoginModal(false);
                 setAdminPasswordInput('');
             }} className="px-4 py-2 border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-100 transition text-sm font-medium">
@@ -1152,10 +1325,10 @@ export default function App() {
             <h3 className="text-xl font-bold text-slate-900 mb-2">{modalConfirm.title}</h3>
             <div className="text-slate-600 mb-6 text-sm">{modalConfirm.message}</div>
             <div className="flex justify-end space-x-3">
-              <button onClick={() => setModalConfirm({ show: false, title: '', message: '', onConfirm: null })} className="px-4 py-2 border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-100 transition text-sm font-medium">
+              <button onClick={function () { return setModalConfirm({ show: false, title: '', message: '', onConfirm: null }); }} className="px-4 py-2 border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-100 transition text-sm font-medium">
                 Cancelar
               </button>
-              <button onClick={() => modalConfirm.onConfirm?.()} className="px-5 py-2 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition text-sm font-medium">
+              <button onClick={function () { var _a; return (_a = modalConfirm.onConfirm) === null || _a === void 0 ? void 0 : _a.call(modalConfirm); }} className="px-5 py-2 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition text-sm font-medium">
                 Confirmar
               </button>
             </div>
@@ -1167,7 +1340,7 @@ export default function App() {
           <div className="relative max-w-4xl w-full bg-white rounded-3xl overflow-hidden shadow-2xl flex flex-col animate-fade-in">
             <div className="p-4 bg-slate-900 text-white flex justify-between items-center border-b border-slate-800">
               <span className="font-bold text-sm tracking-wide uppercase">Volante Oficial del Concurso de Becas APPU</span>
-              <button onClick={() => setShowFlyerModal(false)} className="h-8 w-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-white transition text-lg font-bold">
+              <button onClick={function () { return setShowFlyerModal(false); }} className="h-8 w-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-white transition text-lg font-bold">
                 ✕
               </button>
             </div>
@@ -1182,7 +1355,7 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           
           {/* Logo */}
-          <div className="flex items-center space-x-3 cursor-pointer" onClick={() => { setCurrentView('student-home'); triggerMathJax(); }}>
+          <div className="flex items-center space-x-3 cursor-pointer" onClick={function () { setCurrentView('student-home'); triggerMathJax(); }}>
             <img src="logo_appu.png" alt="Logo Academia APPU" className="h-12 w-auto object-contain"/>
             <div>
               <h1 className="font-extrabold text-base sm:text-lg tracking-tight text-slate-900 leading-tight">ACADEMIA APPU</h1>
@@ -1192,7 +1365,7 @@ export default function App() {
 
           {/* Menú de Navegación Lateral / Botón de Acción */}
           <div className="flex items-center space-x-3">
-            {currentView.startsWith('student-') && (<button onClick={() => {
+            {currentView.startsWith('student-') && (<button onClick={function () {
                 if (isAdminAuthenticated) {
                     setCurrentView('admin-panel');
                     triggerMathJax();
@@ -1208,7 +1381,7 @@ export default function App() {
               </button>)}
 
             {currentView === 'admin-panel' && (<div className="flex items-center space-x-2">
-                <button onClick={() => {
+                <button onClick={function () {
                 setCurrentView('student-home');
                 triggerMathJax();
             }} className="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl hover:bg-slate-200 transition text-sm font-semibold">
@@ -1240,7 +1413,7 @@ export default function App() {
                   {/* Patrón de puntos decorativo */}
                   <div className="absolute top-4 right-8 w-24 h-24 opacity-15 pointer-events-none hidden md:block">
                     <div className="grid grid-cols-6 gap-1.5">
-                      {Array.from({ length: 36 }).map((_, i) => (<div key={i} className="w-1 h-1 rounded-full bg-white"></div>))}
+                      {Array.from({ length: 36 }).map(function (_, i) { return (<div key={i} className="w-1 h-1 rounded-full bg-white"></div>); })}
                     </div>
                   </div>
 
@@ -1297,14 +1470,14 @@ export default function App() {
 
                       {/* Botones de acción unificados (CTA) */}
                       <div className="flex flex-wrap gap-3 pt-3 items-center">
-                        <button onClick={() => {
-                    const exams = document.getElementById('exams-section');
-                    exams?.scrollIntoView({ behavior: 'smooth' });
+                        <button onClick={function () {
+                    var exams = document.getElementById('exams-section');
+                    exams === null || exams === void 0 ? void 0 : exams.scrollIntoView({ behavior: 'smooth' });
                 }} className="px-6 py-3 bg-[#ffc000] hover:bg-[#e6ad00] text-[#0f2c59] font-black rounded-full text-xs sm:text-sm uppercase tracking-wider shadow-lg hover:shadow-xl hover:scale-102 transform duration-150 flex items-center space-x-2">
                           <span>📝 EMPEZAR SIMULACRO AHORA</span>
                           <span>→</span>
                         </button>
-                        <button onClick={() => handleRegisterDirect('concurso')} className="px-6 py-3 bg-[#e1251b] hover:bg-red-700 text-white font-black rounded-full text-xs sm:text-sm uppercase tracking-wider shadow-lg hover:shadow-xl hover:scale-102 transform duration-150 flex items-center space-x-2">
+                        <button onClick={function () { return handleRegisterDirect('concurso'); }} className="px-6 py-3 bg-[#e1251b] hover:bg-red-700 text-white font-black rounded-full text-xs sm:text-sm uppercase tracking-wider shadow-lg hover:shadow-xl hover:scale-102 transform duration-150 flex items-center space-x-2">
                           <span>✅ INSCRIBIRSE PARA EL CONCURSO DE BECAS</span>
                         </button>
 
@@ -1362,7 +1535,7 @@ export default function App() {
                     <div className="flex flex-col lg:flex-row gap-8 items-center">
                       {/* Lado izquierdo: Estudiantes y Sello */}
                       <div className="lg:w-1/3 flex justify-center relative">
-                        <div onClick={() => setShowFlyerModal(true)} className="cursor-pointer max-w-[280px] w-full transform hover:scale-105 transition duration-500 relative animate-float-gentle">
+                        <div onClick={function () { return setShowFlyerModal(true); }} className="cursor-pointer max-w-[280px] w-full transform hover:scale-105 transition duration-500 relative animate-float-gentle">
                           <img src="appu_students_hero.png" alt="Estudiantes Academia APPU" className="w-full h-auto object-contain drop-shadow-[0_8px_16px_rgba(15,44,89,0.1)]"/>
                           {/* Sello flotante */}
                           <div className="absolute -bottom-2 -right-2 w-20 h-20 bg-[#ffcc00] rounded-full flex items-center justify-center text-center p-2 shadow-lg border-2 border-white transform rotate-12 animate-float-seal cursor-pointer hover:scale-110 transition duration-300">
@@ -1571,9 +1744,9 @@ export default function App() {
                           Pide al docente administrador que cargue las preguntas del examen y configure las claves desde el <strong>Acceso Docente</strong> en la parte superior derecha.
                         </p>
                       </div>) : (<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                        {exams.map((exam) => {
-                        const examQuestions = questions.filter((q) => q.examId === exam.id);
-                        const examQCount = examQuestions.length;
+                        {exams.map(function (exam) {
+                        var examQuestions = questions.filter(function (q) { return q.examId === exam.id; });
+                        var examQCount = examQuestions.length;
                         return (<div key={exam.id} className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md hover:border-violet-300 transition duration-300 flex flex-col justify-between group text-left">
                               <div className="space-y-3">
                                 <div className="flex justify-between items-center">
@@ -1596,159 +1769,13 @@ export default function App() {
                                 <span className="text-[10px] sm:text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">
                                   Máximo: {examQCount * 10} Ptos
                                 </span>
-                                <button onClick={() => handleSelectExam(exam)} className="px-5 py-2 bg-violet-600 text-white rounded-full text-xs sm:text-sm font-extrabold hover:bg-violet-700 shadow-sm hover:shadow transition-all duration-200 uppercase tracking-wider">
+                                <button onClick={function () { return handleSelectExam(exam); }} className="px-5 py-2 bg-violet-600 text-white rounded-full text-xs sm:text-sm font-extrabold hover:bg-violet-700 shadow-sm hover:shadow transition-all duration-200 uppercase tracking-wider">
                                   Comenzar Examen
                                 </button>
                               </div>
                             </div>);
                     })}
                       </div>)}
-                  </div>
-
-                  {/* --- SECCIÓN DE RANKINGS Y CUADRO DE HONOR (MÁXIMO RENDIMIENTO) --- */}
-                  <div id="rankings-section" className="max-w-5xl mx-auto my-12 p-6 sm:p-8 bg-[#e0f2fe]/90 rounded-3xl border-2 border-blue-400 shadow-lg space-y-6 text-left animate-fade-in">
-                    <div className="border-b border-blue-300 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                      <div>
-                        <h3 className="text-base sm:text-lg md:text-xl font-black text-slate-900 flex items-center uppercase tracking-wider gap-2">
-                          🏆 CUADRO DE HONOR Y CLASIFICACIONES
-                        </h3>
-                        <p className="text-xs sm:text-sm text-slate-650 mt-1">Sigue los mejores puntajes y el desempeño académico en tiempo real.</p>
-                      </div>
-                      
-                      {/* Tabs de Selección del Ranking */}
-                      <div className="flex bg-white/80 p-1.5 rounded-xl border border-blue-300/80 self-start sm:self-center shadow-sm">
-                        <button onClick={() => { setActiveRankingTab('general'); triggerMathJax(); }} className={`px-5 py-2 rounded-lg text-xs sm:text-sm font-extrabold transition-all duration-150 ${activeRankingTab === 'general'
-                    ? 'bg-blue-600 text-white shadow-md font-black'
-                    : 'text-slate-650 hover:text-slate-900 hover:bg-slate-100/50'}`}>
-                          Top 10 General
-                        </button>
-                        <button onClick={() => { setActiveRankingTab('schools'); triggerMathJax(); }} className={`px-5 py-2 rounded-lg text-xs sm:text-sm font-extrabold transition-all duration-150 ${activeRankingTab === 'schools'
-                    ? 'bg-blue-600 text-white shadow-md font-black'
-                    : 'text-slate-650 hover:text-slate-900 hover:bg-slate-100/50'}`}>
-                          Colegios (Top 3)
-                        </button>
-                        <button onClick={() => { setActiveRankingTab('grades'); triggerMathJax(); }} className={`px-5 py-2 rounded-lg text-xs sm:text-sm font-extrabold transition-all duration-150 ${activeRankingTab === 'grades'
-                    ? 'bg-blue-600 text-white shadow-md font-black'
-                    : 'text-slate-650 hover:text-slate-900 hover:bg-slate-100/50'}`}>
-                          Grados (Top 3)
-                        </button>
-                      </div>
-                    </div>
-
-                    {results.length === 0 ? (<div className="bg-white rounded-2xl border border-slate-200 p-8 text-center shadow-sm">
-                        <span className="text-4xl block mb-2">⭐</span>
-                        <h4 className="text-base font-bold text-slate-800">Aún no se registran resultados</h4>
-                        <p className="text-slate-500 mt-1 max-w-sm mx-auto text-sm">
-                          ¡Sé el primero en dar un simulacro y liderar el ranking general! Completa una de las pruebas de arriba.
-                        </p>
-                      </div>) : (<>
-                        {/* 1. TOP 10 GENERAL */}
-                        {activeRankingTab === 'general' && (<div className="bg-white rounded-2xl border border-blue-200/80 shadow-md overflow-hidden animate-fade-in">
-                            <div className="overflow-x-auto">
-                              <table className="w-full text-left border-collapse text-xs sm:text-sm">
-                                <thead>
-                                  <tr className="bg-blue-50/60 border-b border-blue-100 text-[11px] sm:text-xs font-black uppercase tracking-wider text-slate-700">
-                                    <th className="py-3.5 px-5 text-center w-20">Puesto</th>
-                                    <th className="py-3.5 px-5">Estudiante</th>
-                                    <th className="py-3.5 px-5">Colegio</th>
-                                    <th className="py-3.5 px-5">Grado</th>
-                                    <th className="py-3.5 px-5 text-center">Tiempo</th>
-                                    <th className="py-3.5 px-5 text-right pr-8">Puntaje</th>
-                                  </tr>
-                                </thead>
-                                <tbody className="divide-y divide-blue-50 font-medium text-slate-700 bg-white">
-                                  {getGeneralRanking().map((res, index) => {
-                            const rank = index + 1;
-                            return (<tr key={res.id} className="hover:bg-blue-50/20 transition">
-                                        <td className="py-4 px-5 text-center font-bold text-sm sm:text-base">
-                                          {rank === 1 && <span className="text-2xl" title="1° Puesto">🥇</span>}
-                                          {rank === 2 && <span className="text-2xl" title="2° Puesto">🥈</span>}
-                                          {rank === 3 && <span className="text-2xl" title="3° Puesto">🥉</span>}
-                                          {rank > 3 && <span className="text-slate-500 font-extrabold">{rank}</span>}
-                                        </td>
-                                        <td className="py-4 px-5 font-black text-slate-900 text-sm sm:text-base">
-                                          {res.studentName}
-                                          <span className="block text-[10px] sm:text-[11px] text-slate-500 font-bold mt-0.5">Tutor: {res.tutor}</span>
-                                        </td>
-                                        <td className="py-4 px-5 text-slate-700 font-semibold text-xs sm:text-sm">{res.school}</td>
-                                        <td className="py-4 px-5">
-                                          <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-[10px] sm:text-xs font-extrabold border border-blue-200/50">
-                                            {res.grade}
-                                          </span>
-                                        </td>
-                                        <td className="py-4 px-5 text-center text-slate-700 font-mono text-xs sm:text-sm font-bold">
-                                          {formatTime(res.timeSpent || 0)}
-                                        </td>
-                                        <td className="py-4 px-5 text-right pr-8 font-mono font-black text-violet-700 text-base sm:text-lg">
-                                          {res.score} <span className="text-xs font-bold text-slate-500">pts</span>
-                                        </td>
-                                      </tr>);
-                        })}
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>)}
-
-                        {/* 2. RANKING POR COLEGIO */}
-                        {activeRankingTab === 'schools' && (<div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in">
-                            {getRankingsByGroup('school', 3).map((schoolGroup) => (<div key={schoolGroup.name} className="bg-white rounded-2xl border border-blue-200/80 shadow-md p-5 flex flex-col justify-between">
-                                <div className="border-b border-blue-100 pb-2 mb-3">
-                                  <h4 className="font-black text-slate-900 text-sm sm:text-base flex items-center">
-                                    <span className="text-lg mr-2">🏫</span>
-                                    {schoolGroup.name}
-                                  </h4>
-                                </div>
-                                <div className="space-y-2.5">
-                                  {schoolGroup.topResults.map((res, idx) => (<div key={res.id} className="flex items-center justify-between p-3 rounded-xl bg-blue-50/30 border border-blue-100/70 hover:bg-blue-50/60 transition">
-                                      <div className="flex items-center space-x-3 overflow-hidden">
-                                        <span className={`h-7 w-7 rounded-lg font-black text-sm flex items-center justify-center flex-shrink-0 ${idx === 0 ? 'bg-yellow-100 text-yellow-800' :
-                                    idx === 1 ? 'bg-slate-200 text-slate-700' : 'bg-orange-100 text-orange-800'}`}>
-                                          {idx + 1}
-                                        </span>
-                                        <div className="truncate">
-                                          <p className="text-sm font-black text-slate-900 truncate">{res.studentName}</p>
-                                          <p className="text-[10px] sm:text-xs font-semibold text-slate-500 truncate">{res.grade}</p>
-                                        </div>
-                                      </div>
-                                      <div className="text-right flex-shrink-0 ml-3">
-                                        <span className="text-sm sm:text-base font-black text-violet-750 font-mono">{res.score}</span>
-                                        <p className="text-[10px] text-slate-500 font-mono mt-0.5 font-bold">{formatTime(res.timeSpent || 0)}</p>
-                                      </div>
-                                    </div>))}
-                                </div>
-                              </div>))}
-                          </div>)}
-
-                        {/* 3. RANKING POR GRADOS */}
-                        {activeRankingTab === 'grades' && (<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
-                            {getRankingsByGroup('grade', 3).map((gradeGroup) => (<div key={gradeGroup.name} className="bg-white rounded-2xl border border-blue-200/80 shadow-md p-5 flex flex-col justify-between">
-                                <div className="border-b border-blue-100 pb-2 mb-3">
-                                  <h4 className="font-black text-slate-900 text-sm sm:text-base flex items-center">
-                                    <span className="text-lg mr-2">🎓</span>
-                                    {gradeGroup.name}
-                                  </h4>
-                                </div>
-                                <div className="space-y-2.5">
-                                  {gradeGroup.topResults.map((res, idx) => (<div key={res.id} className="flex items-center justify-between p-3 rounded-xl bg-blue-50/30 border border-blue-100/70 hover:bg-blue-50/60 transition">
-                                      <div className="flex items-center space-x-3 overflow-hidden">
-                                        <span className={`h-7 w-7 rounded-lg font-black text-sm flex items-center justify-center flex-shrink-0 ${idx === 0 ? 'bg-yellow-100 text-yellow-800' :
-                                    idx === 1 ? 'bg-slate-200 text-slate-700' : 'bg-orange-100 text-orange-850'}`}>
-                                          {idx + 1}
-                                        </span>
-                                        <div className="truncate">
-                                          <p className="text-sm font-black text-slate-900 truncate">{res.studentName}</p>
-                                          <p className="text-[10px] sm:text-xs font-semibold text-slate-500 truncate">{res.school}</p>
-                                        </div>
-                                      </div>
-                                      <div className="text-right flex-shrink-0 ml-3">
-                                        <span className="text-sm sm:text-base font-black text-violet-750 font-mono">{res.score}</span>
-                                        <p className="text-[10px] text-slate-500 font-mono mt-0.5 font-bold">{formatTime(res.timeSpent || 0)}</p>
-                                      </div>
-                                    </div>))}
-                                </div>
-                              </div>))}
-                          </div>)}
-                      </>)}
                   </div>
 
                 </div>
@@ -1787,17 +1814,17 @@ export default function App() {
                   <div className="lg:col-span-1 bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
                     <h4 className="font-bold text-slate-800 mb-4 text-sm uppercase tracking-wider">Progreso del Examen</h4>
                     <div className="grid grid-cols-5 gap-2.5">
-                      {activeExamQuestions.map((q, idx) => {
-                    const isAnswered = studentAnswers[q.id] !== undefined;
-                    const isActive = idx === activeQuestionIndex;
-                    return (<button key={q.id} onClick={() => {
+                      {activeExamQuestions.map(function (q, idx) {
+                    var isAnswered = studentAnswers[q.id] !== undefined;
+                    var isActive = idx === activeQuestionIndex;
+                    return (<button key={q.id} onClick={function () {
                             setActiveQuestionIndex(idx);
                             triggerMathJax();
-                        }} className={`h-10 rounded-xl font-bold text-sm transition flex items-center justify-center border-2 ${isActive
+                        }} className={"h-10 rounded-xl font-bold text-sm transition flex items-center justify-center border-2 ".concat(isActive
                             ? 'border-violet-600 bg-violet-50 text-violet-700'
                             : isAnswered
                                 ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
-                                : 'border-slate-200 bg-slate-50 text-slate-600 hover:border-slate-300'}`}>
+                                : 'border-slate-200 bg-slate-50 text-slate-600 hover:border-slate-300')}>
                             {idx + 1}
                           </button>);
                 })}
@@ -1837,7 +1864,7 @@ export default function App() {
 
                         {/* Gráfico/Imagen de la Pregunta (si tiene) */}
                         {activeExamQuestions[activeQuestionIndex].imageType !== 'none' && activeExamQuestions[activeQuestionIndex].imageUrl && (<div className="my-6 p-4 border border-slate-100 bg-slate-50 rounded-xl flex justify-center max-h-96 overflow-hidden">
-                            <img src={activeExamQuestions[activeQuestionIndex].imageUrl} alt={`Gráfico Pregunta ${activeQuestionIndex + 1}`} className="max-h-80 object-contain rounded-lg" onError={(e) => {
+                            <img src={activeExamQuestions[activeQuestionIndex].imageUrl} alt={"Gr\u00E1fico Pregunta ".concat(activeQuestionIndex + 1)} className="max-h-80 object-contain rounded-lg" onError={function (e) {
                             e.currentTarget.style.display = 'none';
                             showToast("No se pudo cargar la imagen del gráfico.", "warning");
                         }}/>
@@ -1845,23 +1872,24 @@ export default function App() {
 
                         {/* Alternativas (Opción Múltiple) */}
                         <div className="space-y-3 mt-6">
-                          {['A', 'B', 'C', 'D', 'E'].map((letter) => {
-                        const optionText = activeExamQuestions[activeQuestionIndex].options?.[letter];
+                          {['A', 'B', 'C', 'D', 'E'].map(function (letter) {
+                        var _a;
+                        var optionText = (_a = activeExamQuestions[activeQuestionIndex].options) === null || _a === void 0 ? void 0 : _a[letter];
                         if (!optionText && optionText !== '0')
                             return null;
-                        const isSelected = studentAnswers[activeExamQuestions[activeQuestionIndex].id] === letter;
-                        return (<button key={letter} onClick={() => handleSelectOption(activeExamQuestions[activeQuestionIndex].id, letter)} className={`w-full text-left p-4 rounded-xl border-2 transition-all flex items-center justify-between group ${isSelected
+                        var isSelected = studentAnswers[activeExamQuestions[activeQuestionIndex].id] === letter;
+                        return (<button key={letter} onClick={function () { return handleSelectOption(activeExamQuestions[activeQuestionIndex].id, letter); }} className={"w-full text-left p-4 rounded-xl border-2 transition-all flex items-center justify-between group ".concat(isSelected
                                 ? 'border-violet-600 bg-violet-50 text-violet-900 shadow-sm'
-                                : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700'}`}>
+                                : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700')}>
                                 <div className="flex items-center pr-4 overflow-auto">
-                                  <span className={`h-8 w-8 rounded-lg flex items-center justify-center font-bold text-sm mr-4 flex-shrink-0 transition-colors ${isSelected
+                                  <span className={"h-8 w-8 rounded-lg flex items-center justify-center font-bold text-sm mr-4 flex-shrink-0 transition-colors ".concat(isSelected
                                 ? 'bg-violet-600 text-white'
-                                : 'bg-slate-100 text-slate-600 group-hover:bg-slate-200'}`}>
+                                : 'bg-slate-100 text-slate-600 group-hover:bg-slate-200')}>
                                     {letter}
                                   </span>
                                   <span className="text-base font-medium">{optionText}</span>
                                 </div>
-                                <div className={`h-5 w-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${isSelected ? 'border-violet-600 bg-violet-600' : 'border-slate-300'}`}>
+                                <div className={"h-5 w-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ".concat(isSelected ? 'border-violet-600 bg-violet-600' : 'border-slate-300')}>
                                   {isSelected && <span className="h-1.5 w-1.5 rounded-full bg-white"></span>}
                                 </div>
                               </button>);
@@ -1870,21 +1898,21 @@ export default function App() {
 
                         {/* Controles de Navegación del Simulacro */}
                         <div className="flex items-center justify-between mt-10 pt-6 border-t border-slate-100">
-                          <button onClick={() => {
+                          <button onClick={function () {
                         if (activeQuestionIndex > 0) {
                             setActiveQuestionIndex(activeQuestionIndex - 1);
                             triggerMathJax();
                         }
-                    }} disabled={activeQuestionIndex === 0} className={`px-5 py-2.5 rounded-xl text-sm font-semibold border flex items-center transition ${activeQuestionIndex === 0
+                    }} disabled={activeQuestionIndex === 0} className={"px-5 py-2.5 rounded-xl text-sm font-semibold border flex items-center transition ".concat(activeQuestionIndex === 0
                         ? 'border-slate-150 text-slate-300 cursor-not-allowed'
-                        : 'border-slate-200 text-slate-700 hover:bg-slate-50'}`}>
+                        : 'border-slate-200 text-slate-700 hover:bg-slate-50')}>
                             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"/>
                             </svg>
                             Anterior
                           </button>
 
-                          <button onClick={() => {
+                          <button onClick={function () {
                         if (studentAnswers[activeExamQuestions[activeQuestionIndex].id] === undefined) {
                             showToast("No olvides que puedes omitir o responder después.", "info");
                         }
@@ -1892,9 +1920,9 @@ export default function App() {
                             setActiveQuestionIndex(activeQuestionIndex + 1);
                             triggerMathJax();
                         }
-                    }} disabled={activeQuestionIndex === activeExamQuestions.length - 1} className={`px-5 py-2.5 rounded-xl text-sm font-semibold border flex items-center transition ${activeQuestionIndex === activeExamQuestions.length - 1
+                    }} disabled={activeQuestionIndex === activeExamQuestions.length - 1} className={"px-5 py-2.5 rounded-xl text-sm font-semibold border flex items-center transition ".concat(activeQuestionIndex === activeExamQuestions.length - 1
                         ? 'border-slate-150 text-slate-300 cursor-not-allowed'
-                        : 'border-slate-200 text-slate-700 hover:bg-slate-50'}`}>
+                        : 'border-slate-200 text-slate-700 hover:bg-slate-50')}>
                             Siguiente
                             <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"/>
@@ -1980,11 +2008,11 @@ export default function App() {
 
                 {/* Botón para ver el ranking de participantes */}
                 <div className="flex justify-center my-6">
-                  <button onClick={() => {
+                  <button onClick={function () {
                     setShowRankingInResults(true);
-                    setTimeout(() => {
-                        const rankingSec = document.getElementById('results-ranking-section');
-                        rankingSec?.scrollIntoView({ behavior: 'smooth' });
+                    setTimeout(function () {
+                        var rankingSec = document.getElementById('results-ranking-section');
+                        rankingSec === null || rankingSec === void 0 ? void 0 : rankingSec.scrollIntoView({ behavior: 'smooth' });
                     }, 100);
                 }} className="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-650 hover:from-blue-750 hover:to-indigo-750 text-white font-extrabold rounded-2xl shadow-lg hover:shadow-xl hover:scale-102 transform duration-155 flex items-center space-x-2 text-sm sm:text-base tracking-wider uppercase">
                     <span>🏆 VER MI POSICIÓN EN EL RANKING DE PARTICIPANTES</span>
@@ -2003,19 +2031,19 @@ export default function App() {
                       
                       {/* Tabs de Selección del Ranking */}
                       <div className="flex bg-white/80 p-1.5 rounded-xl border border-blue-300/80 self-start sm:self-center shadow-sm">
-                        <button onClick={() => { setActiveRankingTab('general'); triggerMathJax(); }} className={`px-5 py-2 rounded-lg text-xs sm:text-sm font-extrabold transition-all duration-150 ${activeRankingTab === 'general'
+                        <button onClick={function () { setActiveRankingTab('general'); triggerMathJax(); }} className={"px-5 py-2 rounded-lg text-xs sm:text-sm font-extrabold transition-all duration-150 ".concat(activeRankingTab === 'general'
                         ? 'bg-blue-600 text-white shadow-md font-black'
-                        : 'text-slate-650 hover:text-slate-900 hover:bg-slate-100/50'}`}>
+                        : 'text-slate-650 hover:text-slate-900 hover:bg-slate-100/50')}>
                           Top 10 General
                         </button>
-                        <button onClick={() => { setActiveRankingTab('schools'); triggerMathJax(); }} className={`px-5 py-2 rounded-lg text-xs sm:text-sm font-extrabold transition-all duration-150 ${activeRankingTab === 'schools'
+                        <button onClick={function () { setActiveRankingTab('schools'); triggerMathJax(); }} className={"px-5 py-2 rounded-lg text-xs sm:text-sm font-extrabold transition-all duration-150 ".concat(activeRankingTab === 'schools'
                         ? 'bg-blue-600 text-white shadow-md font-black'
-                        : 'text-slate-650 hover:text-slate-900 hover:bg-slate-100/50'}`}>
+                        : 'text-slate-650 hover:text-slate-900 hover:bg-slate-100/50')}>
                           Colegios (Top 3)
                         </button>
-                        <button onClick={() => { setActiveRankingTab('grades'); triggerMathJax(); }} className={`px-5 py-2 rounded-lg text-xs sm:text-sm font-extrabold transition-all duration-150 ${activeRankingTab === 'grades'
+                        <button onClick={function () { setActiveRankingTab('grades'); triggerMathJax(); }} className={"px-5 py-2 rounded-lg text-xs sm:text-sm font-extrabold transition-all duration-150 ".concat(activeRankingTab === 'grades'
                         ? 'bg-blue-600 text-white shadow-md font-black'
-                        : 'text-slate-650 hover:text-slate-900 hover:bg-slate-100/50'}`}>
+                        : 'text-slate-650 hover:text-slate-900 hover:bg-slate-100/50')}>
                           Grados (Top 3)
                         </button>
                       </div>
@@ -2043,8 +2071,8 @@ export default function App() {
                                   </tr>
                                 </thead>
                                 <tbody className="divide-y divide-blue-50 font-medium text-slate-700 bg-white">
-                                  {getGeneralRanking().map((res, index) => {
-                                const rank = index + 1;
+                                  {getGeneralRanking().map(function (res, index) {
+                                var rank = index + 1;
                                 return (<tr key={res.id} className="hover:bg-blue-50/20 transition">
                                         <td className="py-4 px-5 text-center font-bold text-sm sm:text-base">
                                           {rank === 1 && <span className="text-2xl" title="1° Puesto">🥇</span>}
@@ -2077,7 +2105,7 @@ export default function App() {
 
                         {/* 2. RANKING POR COLEGIO */}
                         {activeRankingTab === 'schools' && (<div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in">
-                            {getRankingsByGroup('school', 3).map((schoolGroup) => (<div key={schoolGroup.name} className="bg-white rounded-2xl border border-blue-200/80 shadow-md p-5 flex flex-col justify-between">
+                            {getRankingsByGroup('school', 3).map(function (schoolGroup) { return (<div key={schoolGroup.name} className="bg-white rounded-2xl border border-blue-200/80 shadow-md p-5 flex flex-col justify-between">
                                 <div className="border-b border-blue-100 pb-2 mb-3">
                                   <h4 className="font-black text-slate-900 text-sm sm:text-base flex items-center">
                                     <span className="text-lg mr-2">🏫</span>
@@ -2085,10 +2113,10 @@ export default function App() {
                                   </h4>
                                 </div>
                                 <div className="space-y-2.5">
-                                  {schoolGroup.topResults.map((res, idx) => (<div key={res.id} className="flex items-center justify-between p-3 rounded-xl bg-blue-50/30 border border-blue-100/70 hover:bg-blue-50/60 transition">
+                                  {schoolGroup.topResults.map(function (res, idx) { return (<div key={res.id} className="flex items-center justify-between p-3 rounded-xl bg-blue-50/30 border border-blue-100/70 hover:bg-blue-50/60 transition">
                                       <div className="flex items-center space-x-3 overflow-hidden">
-                                        <span className={`h-7 w-7 rounded-lg font-black text-sm flex items-center justify-center flex-shrink-0 ${idx === 0 ? 'bg-yellow-100 text-yellow-800' :
-                                        idx === 1 ? 'bg-slate-200 text-slate-700' : 'bg-orange-100 text-orange-850'}`}>
+                                        <span className={"h-7 w-7 rounded-lg font-black text-sm flex items-center justify-center flex-shrink-0 ".concat(idx === 0 ? 'bg-yellow-100 text-yellow-800' :
+                                        idx === 1 ? 'bg-slate-200 text-slate-700' : 'bg-orange-100 text-orange-850')}>
                                           {idx + 1}
                                         </span>
                                         <div className="truncate">
@@ -2100,14 +2128,14 @@ export default function App() {
                                         <span className="text-sm sm:text-base font-black text-violet-750 font-mono">{res.score}</span>
                                         <p className="text-[10px] text-slate-500 font-mono mt-0.5 font-bold">{formatTime(res.timeSpent || 0)}</p>
                                       </div>
-                                    </div>))}
+                                    </div>); })}
                                 </div>
-                              </div>))}
+                              </div>); })}
                           </div>)}
 
                         {/* 3. RANKING POR GRADOS */}
                         {activeRankingTab === 'grades' && (<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in">
-                            {getRankingsByGroup('grade', 3).map((gradeGroup) => (<div key={gradeGroup.name} className="bg-white rounded-2xl border border-blue-200/80 shadow-md p-5 flex flex-col justify-between">
+                            {getRankingsByGroup('grade', 3).map(function (gradeGroup) { return (<div key={gradeGroup.name} className="bg-white rounded-2xl border border-blue-200/80 shadow-md p-5 flex flex-col justify-between">
                                 <div className="border-b border-blue-100 pb-2 mb-3">
                                   <h4 className="font-black text-slate-900 text-sm sm:text-base flex items-center">
                                     <span className="text-lg mr-2">🎓</span>
@@ -2115,10 +2143,10 @@ export default function App() {
                                   </h4>
                                 </div>
                                 <div className="space-y-2.5">
-                                  {gradeGroup.topResults.map((res, idx) => (<div key={res.id} className="flex items-center justify-between p-3 rounded-xl bg-blue-50/30 border border-blue-100/70 hover:bg-blue-50/60 transition">
+                                  {gradeGroup.topResults.map(function (res, idx) { return (<div key={res.id} className="flex items-center justify-between p-3 rounded-xl bg-blue-50/30 border border-blue-100/70 hover:bg-blue-50/60 transition">
                                       <div className="flex items-center space-x-3 overflow-hidden">
-                                        <span className={`h-7 w-7 rounded-lg font-black text-sm flex items-center justify-center flex-shrink-0 ${idx === 0 ? 'bg-yellow-100 text-yellow-800' :
-                                        idx === 1 ? 'bg-slate-200 text-slate-700' : 'bg-orange-100 text-orange-850'}`}>
+                                        <span className={"h-7 w-7 rounded-lg font-black text-sm flex items-center justify-center flex-shrink-0 ".concat(idx === 0 ? 'bg-yellow-100 text-yellow-800' :
+                                        idx === 1 ? 'bg-slate-200 text-slate-700' : 'bg-orange-100 text-orange-850')}>
                                           {idx + 1}
                                         </span>
                                         <div className="truncate">
@@ -2130,9 +2158,9 @@ export default function App() {
                                         <span className="text-sm sm:text-base font-black text-violet-750 font-mono">{res.score}</span>
                                         <p className="text-[10px] text-slate-500 font-mono mt-0.5 font-bold">{formatTime(res.timeSpent || 0)}</p>
                                       </div>
-                                    </div>))}
+                                    </div>); })}
                                 </div>
-                              </div>))}
+                              </div>); })}
                           </div>)}
                       </>)}
                   </div>)}
@@ -2143,7 +2171,7 @@ export default function App() {
                     <button onClick={restartExam} className="px-5 py-2.5 border border-slate-200 hover:bg-slate-100 rounded-xl font-semibold text-sm transition text-slate-700">
                       Volver a Intentar
                     </button>
-                    <button onClick={() => {
+                    <button onClick={function () {
                     setSelectedExam(null);
                     setCurrentView('student-home');
                     triggerMathJax();
@@ -2155,22 +2183,22 @@ export default function App() {
 
                 {/* Lista de preguntas con su solucionario y detalle de respuesta */}
                 <div className="space-y-6">
-                  {activeExamQuestions.map((q, idx) => {
-                    const studentAns = studentAnswers[q.id];
-                    const isCorrect = studentAns === q.correctOption;
-                    const isOmitted = !studentAns;
-                    return (<div key={q.id} className={`bg-white rounded-2xl border overflow-hidden shadow-sm transition ${isCorrect
+                  {activeExamQuestions.map(function (q, idx) {
+                    var studentAns = studentAnswers[q.id];
+                    var isCorrect = studentAns === q.correctOption;
+                    var isOmitted = !studentAns;
+                    return (<div key={q.id} className={"bg-white rounded-2xl border overflow-hidden shadow-sm transition ".concat(isCorrect
                             ? 'border-emerald-200'
                             : isOmitted
                                 ? 'border-amber-200'
-                                : 'border-rose-200'}`}>
+                                : 'border-rose-200')}>
                         
                         {/* Cabecera de Pregunta Individual */}
-                        <div className={`px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between border-b gap-3 ${isCorrect
+                        <div className={"px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between border-b gap-3 ".concat(isCorrect
                             ? 'bg-emerald-50/50 border-emerald-100'
                             : isOmitted
                                 ? 'bg-amber-50/50 border-amber-100'
-                                : 'bg-rose-50/50 border-rose-100'}`}>
+                                : 'bg-rose-50/50 border-rose-100')}>
                           <div className="flex items-center space-x-3">
                             <span className="font-bold text-slate-800 text-base">Pregunta {idx + 1}</span>
                             {isCorrect && (<span className="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold uppercase tracking-wider flex items-center">
@@ -2208,22 +2236,23 @@ export default function App() {
 
                           {/* Alternativas mostradas de nuevo */}
                           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 my-4">
-                            {['A', 'B', 'C', 'D', 'E'].map(l => {
-                            const opt = q.options?.[l];
+                            {['A', 'B', 'C', 'D', 'E'].map(function (l) {
+                            var _a;
+                            var opt = (_a = q.options) === null || _a === void 0 ? void 0 : _a[l];
                             if (!opt && opt !== '0')
                                 return null;
-                            const isCurrentOptCorrect = l === q.correctOption;
-                            const isCurrentOptStudent = l === studentAns;
-                            return (<div key={l} className={`p-3 rounded-xl border text-sm flex items-center font-medium ${isCurrentOptCorrect
+                            var isCurrentOptCorrect = l === q.correctOption;
+                            var isCurrentOptStudent = l === studentAns;
+                            return (<div key={l} className={"p-3 rounded-xl border text-sm flex items-center font-medium ".concat(isCurrentOptCorrect
                                     ? 'border-emerald-300 bg-emerald-50 text-emerald-900'
                                     : isCurrentOptStudent
                                         ? 'border-rose-300 bg-rose-50 text-rose-900'
-                                        : 'border-slate-200 text-slate-600'}`}>
-                                  <span className={`h-6 w-6 rounded flex items-center justify-center text-xs font-bold mr-2 flex-shrink-0 ${isCurrentOptCorrect
+                                        : 'border-slate-200 text-slate-600')}>
+                                  <span className={"h-6 w-6 rounded flex items-center justify-center text-xs font-bold mr-2 flex-shrink-0 ".concat(isCurrentOptCorrect
                                     ? 'bg-emerald-600 text-white'
                                     : isCurrentOptStudent
                                         ? 'bg-rose-600 text-white'
-                                        : 'bg-slate-100 text-slate-500'}`}>
+                                        : 'bg-slate-100 text-slate-500')}>
                                     {l}
                                   </span>
                                   <span className="truncate">{opt}</span>
@@ -2272,22 +2301,22 @@ export default function App() {
                   
                   {/* Selector rápido de Tab */}
                   <div className="flex bg-slate-800 p-1.5 rounded-2xl border border-slate-700 overflow-x-auto whitespace-nowrap">
-                    <button onClick={() => setAdminTab('exams')} className={`px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition ${adminTab === 'exams'
+                    <button onClick={function () { return setAdminTab('exams'); }} className={"px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition ".concat(adminTab === 'exams'
                     ? 'bg-violet-600 text-white shadow'
-                    : 'text-slate-400 hover:text-white'}`}>
+                    : 'text-slate-400 hover:text-white')}>
                       1. Gestionar Exámenes
                     </button>
-                    <button onClick={() => {
+                    <button onClick={function () {
                     setAdminTab('questions');
                     triggerMathJax();
-                }} className={`px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition ${adminTab === 'questions'
+                }} className={"px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition ".concat(adminTab === 'questions'
                     ? 'bg-violet-600 text-white shadow'
-                    : 'text-slate-400 hover:text-white'}`}>
+                    : 'text-slate-400 hover:text-white')}>
                       2. Banco de Preguntas
                     </button>
-                    <button onClick={() => setAdminTab('results')} className={`px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition ${adminTab === 'results'
+                    <button onClick={function () { return setAdminTab('results'); }} className={"px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition ".concat(adminTab === 'results'
                     ? 'bg-violet-600 text-white shadow'
-                    : 'text-slate-400 hover:text-white'}`}>
+                    : 'text-slate-400 hover:text-white')}>
                       3. Registros de Datos
                     </button>
                   </div>
@@ -2311,19 +2340,19 @@ export default function App() {
                         <form onSubmit={handleSaveExam} className="space-y-4">
                           <div>
                             <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Nombre del Examen / Grupo</label>
-                            <input type="text" placeholder="Ej. Examen General de Becas 2026 - I" value={examForm.name} onChange={(e) => setExamForm({ ...examForm, name: e.target.value })} className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:outline-none text-sm font-medium"/>
+                            <input type="text" placeholder="Ej. Examen General de Becas 2026 - I" value={examForm.name} onChange={function (e) { return setExamForm(__assign(__assign({}, examForm), { name: e.target.value })); }} className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:outline-none text-sm font-medium"/>
                           </div>
 
                           <div>
                             <label className="block text-xs font-bold uppercase text-slate-500 mb-1">Descripción corta</label>
-                            <textarea rows={3} placeholder="Ej. Simulacro oficial de 10 preguntas que evalúa álgebra, trigonometría y razonamiento matemático." value={examForm.description} onChange={(e) => setExamForm({ ...examForm, description: e.target.value })} className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:outline-none text-sm"></textarea>
+                            <textarea rows={3} placeholder="Ej. Simulacro oficial de 10 preguntas que evalúa álgebra, trigonometría y razonamiento matemático." value={examForm.description} onChange={function (e) { return setExamForm(__assign(__assign({}, examForm), { description: e.target.value })); }} className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:outline-none text-sm"></textarea>
                           </div>
 
                           <div className="flex space-x-2 pt-2">
                             <button type="submit" className="flex-grow py-2.5 bg-violet-600 hover:bg-violet-700 text-white font-semibold rounded-xl text-sm transition">
                               {examForm.id ? "Guardar Cambios" : "Crear Examen"}
                             </button>
-                            {examForm.id && (<button type="button" onClick={() => setExamForm({ id: null, name: '', description: '' })} className="px-4 py-2.5 border border-slate-200 text-slate-600 hover:bg-slate-50 rounded-xl text-sm">
+                            {examForm.id && (<button type="button" onClick={function () { return setExamForm({ id: null, name: '', description: '' }); }} className="px-4 py-2.5 border border-slate-200 text-slate-600 hover:bg-slate-50 rounded-xl text-sm">
                                 Cancelar
                               </button>)}
                           </div>
@@ -2356,26 +2385,7 @@ export default function App() {
                             <span className="transition-transform group-open:rotate-180 text-[10px]">▼</span>
                           </summary>
                           <div className="p-3 border-t border-slate-200 bg-slate-905 text-slate-200 text-[10px] font-mono rounded-b-xl max-h-60 overflow-y-auto whitespace-pre">
-                    {`{
-  "name": "Simulacro Especial de Becas",
-  "description": "Examen de entrenamiento",
-  "questions": [
-    {
-      "text": "¿Cuánto es $2x + 5 = 15$?",
-      "options": {
-        "A": "3",
-        "B": "5",
-        "C": "7",
-        "D": "9",
-        "E": "10"
-      },
-      "correctOption": "B",
-      "solutionText": "Restamos 5 de ambos lados...",
-      "imageUrl": "data:image/jpeg;base64,...",
-      "order": 1
-    }
-  ]
-}`}
+                    {"{\n  \"name\": \"Simulacro Especial de Becas\",\n  \"description\": \"Examen de entrenamiento\",\n  \"questions\": [\n    {\n      \"text\": \"\u00BFCu\u00E1nto es $2x + 5 = 15$?\",\n      \"options\": {\n        \"A\": \"3\",\n        \"B\": \"5\",\n        \"C\": \"7\",\n        \"D\": \"9\",\n        \"E\": \"10\"\n      },\n      \"correctOption\": \"B\",\n      \"solutionText\": \"Restamos 5 de ambos lados...\",\n      \"imageUrl\": \"data:image/jpeg;base64,...\",\n      \"order\": 1\n    }\n  ]\n}"}
                           </div>
                         </details>
                       </div>
@@ -2411,7 +2421,7 @@ export default function App() {
                                 <img src={converterBase64Result} alt="Convertida" className="max-h-20 object-contain"/>
                               </div>
 
-                              <textarea readOnly rows={2} value={converterBase64Result} className="w-full p-2 border border-slate-200 rounded-lg text-[9px] font-mono bg-white text-slate-600 focus:outline-none" onClick={(e) => e.target.select()}></textarea>
+                              <textarea readOnly rows={2} value={converterBase64Result} className="w-full p-2 border border-slate-200 rounded-lg text-[9px] font-mono bg-white text-slate-600 focus:outline-none" onClick={function (e) { return e.target.select(); }}></textarea>
                               <span className="text-[8px] text-slate-400 block text-right">
                                 Haz clic en la caja para seleccionar todo el texto.
                               </span>
@@ -2428,8 +2438,8 @@ export default function App() {
                       </h3>
 
                       {exams.length === 0 ? (<p className="text-slate-400 text-sm text-center py-10 italic">Aún no has creado ningún examen grupal para enlazar las preguntas.</p>) : (<div className="space-y-4">
-                          {exams.map((exam) => {
-                            const qCount = questions.filter((q) => q.examId === exam.id).length;
+                          {exams.map(function (exam) {
+                            var qCount = questions.filter(function (q) { return q.examId === exam.id; }).length;
                             return (<div key={exam.id} className="p-4 border border-slate-200 rounded-2xl flex flex-col sm:flex-row justify-between sm:items-center gap-4 hover:border-slate-300 transition">
                                 <div>
                                   <h4 className="font-bold text-slate-900 text-base">{exam.name}</h4>
@@ -2445,12 +2455,12 @@ export default function App() {
                                 </div>
 
                                 <div className="flex space-x-2 self-end sm:self-center">
-                                  <button onClick={() => handleEditExam(exam)} className="p-2 border border-slate-200 rounded-lg hover:bg-slate-50 text-slate-600 transition" title="Editar examen">
+                                  <button onClick={function () { return handleEditExam(exam); }} className="p-2 border border-slate-200 rounded-lg hover:bg-slate-50 text-slate-600 transition" title="Editar examen">
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
                                     </svg>
                                   </button>
-                                  <button onClick={() => handleDeleteExam(exam.id)} className="p-2 border border-slate-200 rounded-lg hover:bg-rose-50 text-rose-600 hover:border-rose-200 transition" title="Eliminar examen">
+                                  <button onClick={function () { return handleDeleteExam(exam.id); }} className="p-2 border border-slate-200 rounded-lg hover:bg-rose-50 text-rose-600 hover:border-rose-200 transition" title="Eliminar examen">
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                     </svg>
@@ -2490,22 +2500,22 @@ export default function App() {
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                           <div>
                             <label className="block text-xs font-bold uppercase text-slate-500 mb-1.5">1. Agrupar en Examen (Obligatorio)</label>
-                            <select value={questionForm.examId} onChange={(e) => setQuestionForm({ ...questionForm, examId: e.target.value })} className="w-full px-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:outline-none text-sm font-semibold bg-white">
+                            <select value={questionForm.examId} onChange={function (e) { return setQuestionForm(__assign(__assign({}, questionForm), { examId: e.target.value })); }} className="w-full px-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:outline-none text-sm font-semibold bg-white">
                               <option value="">-- Seleccionar Examen --</option>
-                              {exams.map((e) => (<option key={e.id} value={e.id}>{e.name}</option>))}
+                              {exams.map(function (e) { return (<option key={e.id} value={e.id}>{e.name}</option>); })}
                             </select>
                           </div>
 
                           <div>
                             <label className="block text-xs font-bold uppercase text-slate-500 mb-1.5">2. Posición / Orden numérico</label>
-                            <input type="number" min="0" value={questionForm.order} onChange={(e) => setQuestionForm({ ...questionForm, order: Number(e.target.value) })} className="w-full px-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:outline-none text-sm"/>
+                            <input type="number" min="0" value={questionForm.order} onChange={function (e) { return setQuestionForm(__assign(__assign({}, questionForm), { order: Number(e.target.value) })); }} className="w-full px-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:outline-none text-sm"/>
                             <span className="text-[10px] text-slate-400 block mt-1">Sirve para ordenar el orden del simulacro.</span>
                           </div>
 
                           <div>
                             <label className="block text-xs font-bold uppercase text-slate-500 mb-1.5">3. Respuesta Clave</label>
-                            <select value={questionForm.correctOption} onChange={(e) => setQuestionForm({ ...questionForm, correctOption: e.target.value })} className="w-full px-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:outline-none text-sm font-bold bg-white text-emerald-700">
-                              {['A', 'B', 'C', 'D', 'E'].map(l => (<option key={l} value={l}>Opción {l}</option>))}
+                            <select value={questionForm.correctOption} onChange={function (e) { return setQuestionForm(__assign(__assign({}, questionForm), { correctOption: e.target.value })); }} className="w-full px-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:outline-none text-sm font-bold bg-white text-emerald-700">
+                              {['A', 'B', 'C', 'D', 'E'].map(function (l) { return (<option key={l} value={l}>Opción {l}</option>); })}
                             </select>
                           </div>
                         </div>
@@ -2513,7 +2523,7 @@ export default function App() {
                         {/* Enunciado de la Pregunta y previsualización */}
                         <div>
                           <label className="block text-xs font-bold uppercase text-slate-500 mb-1.5">4. Enunciado de la Pregunta (Soporta LaTeX)</label>
-                          <textarea rows={4} placeholder="Escribe el problema aquí. Puedes agregar símbolos, ej: Hallar el valor de $x$ en la ecuación: $2x^2 + 5x - 3 = 0$" value={questionForm.text} onChange={(e) => setQuestionForm({ ...questionForm, text: e.target.value })} className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:outline-none text-sm font-medium"></textarea>
+                          <textarea rows={4} placeholder="Escribe el problema aquí. Puedes agregar símbolos, ej: Hallar el valor de $x$ en la ecuación: $2x^2 + 5x - 3 = 0$" value={questionForm.text} onChange={function (e) { return setQuestionForm(__assign(__assign({}, questionForm), { text: e.target.value })); }} className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:outline-none text-sm font-medium"></textarea>
                           
                           <div className="flex justify-between items-center mt-2">
                             <span className="text-[10px] text-slate-400">Presiona "Visualizar Fórmulas" abajo para renderizar lo escrito.</span>
@@ -2527,20 +2537,24 @@ export default function App() {
                         <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
                           <label className="block text-xs font-bold uppercase text-slate-600 mb-2">5. ¿Lleva Imagen/Gráfico el Enunciado?</label>
                           <div className="flex space-x-4 mb-3">
-                            {[['none', 'Sin gráfico'], ['url', 'Por Enlace (URL)'], ['file', 'Cargar Imagen Local']].map(([val, label]) => (<label key={val} className="flex items-center text-sm font-medium text-slate-700 cursor-pointer">
-                                <input type="radio" name="imageType" value={val} checked={questionForm.imageType === val} onChange={(e) => setQuestionForm({ ...questionForm, imageType: e.target.value })} className="mr-1.5 text-violet-600 focus:ring-violet-500"/>
+                            {[['none', 'Sin gráfico'], ['url', 'Por Enlace (URL)'], ['file', 'Cargar Imagen Local']].map(function (_a) {
+                        var val = _a[0], label = _a[1];
+                        return (<label key={val} className="flex items-center text-sm font-medium text-slate-700 cursor-pointer">
+                                <input type="radio" name="imageType" value={val} checked={questionForm.imageType === val} onChange={function (e) { return setQuestionForm(__assign(__assign({}, questionForm), { imageType: e.target.value })); }} className="mr-1.5 text-violet-600 focus:ring-violet-500"/>
                                 {label}
-                              </label>))}
+                              </label>);
+                    })}
                           </div>
 
-                          {questionForm.imageType === 'url' && (<input type="text" placeholder="Pega la URL de la imagen aquí (Ej: https://sitio.com/grafico.png)" value={questionForm.imageUrl} onChange={(e) => setQuestionForm({ ...questionForm, imageUrl: e.target.value })} className="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs"/>)}
+                          {questionForm.imageType === 'url' && (<input type="text" placeholder="Pega la URL de la imagen aquí (Ej: https://sitio.com/grafico.png)" value={questionForm.imageUrl} onChange={function (e) { return setQuestionForm(__assign(__assign({}, questionForm), { imageUrl: e.target.value })); }} className="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs"/>)}
 
                           {questionForm.imageType === 'file' && (<div>
-                              <input type="file" accept="image/*" onChange={(e) => {
-                            const file = e.target.files?.[0];
+                              <input type="file" accept="image/*" onChange={function (e) {
+                            var _a;
+                            var file = (_a = e.target.files) === null || _a === void 0 ? void 0 : _a[0];
                             if (file) {
-                                handleImageUpload(file, (base64Str) => {
-                                    setQuestionForm({ ...questionForm, imageUrl: base64Str });
+                                handleImageUpload(file, function (base64Str) {
+                                    setQuestionForm(__assign(__assign({}, questionForm), { imageUrl: base64Str }));
                                 });
                             }
                         }} className="text-xs text-slate-600 block"/>
@@ -2555,16 +2569,16 @@ export default function App() {
                         <div className="space-y-4">
                           <label className="block text-xs font-bold uppercase text-slate-500">6. Alternativas (Soportan LaTeX)</label>
                           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                            {['A', 'B', 'C', 'D', 'E'].map((letter) => (<div key={letter} className="relative">
+                            {['A', 'B', 'C', 'D', 'E'].map(function (letter) { return (<div key={letter} className="relative">
                                 <span className="absolute left-3 top-3 h-6 w-6 rounded bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center border">
                                   {letter}
                                 </span>
-                                <input type="text" placeholder={`Alternativa ${letter}`} value={questionForm.options[letter]} onChange={(e) => {
-                            const opts = { ...questionForm.options };
+                                <input type="text" placeholder={"Alternativa ".concat(letter)} value={questionForm.options[letter]} onChange={function (e) {
+                            var opts = __assign({}, questionForm.options);
                             opts[letter] = e.target.value;
-                            setQuestionForm({ ...questionForm, options: opts });
+                            setQuestionForm(__assign(__assign({}, questionForm), { options: opts }));
                         }} className="w-full pl-11 pr-3 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:outline-none text-xs font-semibold"/>
-                              </div>))}
+                              </div>); })}
                           </div>
                         </div>
 
@@ -2577,7 +2591,7 @@ export default function App() {
 
                           <div>
                             <label className="block text-xs font-bold uppercase text-slate-500 mb-1.5">Explicación Paso a Paso (Soporta LaTeX)</label>
-                            <textarea rows={3} placeholder="Ej: Despejamos $x$ de la ecuación cuadrática por fórmula general: $x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$." value={questionForm.solutionText} onChange={(e) => setQuestionForm({ ...questionForm, solutionText: e.target.value })} className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:outline-none text-sm"></textarea>
+                            <textarea rows={3} placeholder="Ej: Despejamos $x$ de la ecuación cuadrática por fórmula general: $x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$." value={questionForm.solutionText} onChange={function (e) { return setQuestionForm(__assign(__assign({}, questionForm), { solutionText: e.target.value })); }} className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-violet-500 focus:outline-none text-sm"></textarea>
                           </div>
 
                           {/* Imagen del Solucionario */}
@@ -2588,20 +2602,24 @@ export default function App() {
                         ['none', 'Sin gráfico de solución'],
                         ['url', 'Por Enlace (URL)'],
                         ['file', 'Cargar Imagen Local']
-                    ].map(([val, label]) => (<label key={val} className="flex items-center text-sm font-medium text-slate-700 cursor-pointer">
-                                  <input type="radio" name="solutionImageType" value={val} checked={questionForm.solutionImageType === val} onChange={(e) => setQuestionForm({ ...questionForm, solutionImageType: e.target.value })} className="mr-1.5 text-violet-600 focus:ring-violet-500"/>
+                    ].map(function (_a) {
+                        var val = _a[0], label = _a[1];
+                        return (<label key={val} className="flex items-center text-sm font-medium text-slate-700 cursor-pointer">
+                                  <input type="radio" name="solutionImageType" value={val} checked={questionForm.solutionImageType === val} onChange={function (e) { return setQuestionForm(__assign(__assign({}, questionForm), { solutionImageType: e.target.value })); }} className="mr-1.5 text-violet-600 focus:ring-violet-500"/>
                                   {label}
-                                </label>))}
+                                </label>);
+                    })}
                             </div>
 
-                            {questionForm.solutionImageType === 'url' && (<input type="text" placeholder="Enlace URL de la solución" value={questionForm.solutionImageUrl} onChange={(e) => setQuestionForm({ ...questionForm, solutionImageUrl: e.target.value })} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs"/>)}
+                            {questionForm.solutionImageType === 'url' && (<input type="text" placeholder="Enlace URL de la solución" value={questionForm.solutionImageUrl} onChange={function (e) { return setQuestionForm(__assign(__assign({}, questionForm), { solutionImageUrl: e.target.value })); }} className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs"/>)}
 
                             {questionForm.solutionImageType === 'file' && (<div>
-                                <input type="file" accept="image/*" onChange={(e) => {
-                            const file = e.target.files?.[0];
+                                <input type="file" accept="image/*" onChange={function (e) {
+                            var _a;
+                            var file = (_a = e.target.files) === null || _a === void 0 ? void 0 : _a[0];
                             if (file) {
-                                handleImageUpload(file, (base64Str) => {
-                                    setQuestionForm({ ...questionForm, solutionImageUrl: base64Str });
+                                handleImageUpload(file, function (base64Str) {
+                                    setQuestionForm(__assign(__assign({}, questionForm), { solutionImageUrl: base64Str }));
                                 });
                             }
                         }} className="text-xs text-slate-600 block"/>
@@ -2619,7 +2637,7 @@ export default function App() {
                             {questionForm.id ? "Guardar Pregunta Modificada" : "Guardar e Incrementar Pregunta"}
                           </button>
 
-                          {questionForm.id && (<button type="button" onClick={() => setQuestionForm({
+                          {questionForm.id && (<button type="button" onClick={function () { return setQuestionForm({
                             id: null,
                             examId: questionForm.examId,
                             text: '',
@@ -2631,7 +2649,7 @@ export default function App() {
                             solutionImageType: 'none',
                             solutionImageUrl: '',
                             order: 0
-                        })} className="px-5 py-3 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-xl text-sm font-semibold">
+                        }); }} className="px-5 py-3 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-xl text-sm font-semibold">
                               Cancelar Modificación
                             </button>)}
                         </div>
@@ -2650,25 +2668,25 @@ export default function App() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                         <div>
                           <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Filtrar por Examen</label>
-                          <select value={selectedAdminExamId} onChange={(e) => {
+                          <select value={selectedAdminExamId} onChange={function (e) {
                         setSelectedAdminExamId(e.target.value);
                         triggerMathJax();
                     }} className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm font-semibold bg-white">
                             <option value="all">-- Todos los Exámenes --</option>
-                            {exams.map((e) => (<option key={e.id} value={e.id}>{e.name}</option>))}
+                            {exams.map(function (e) { return (<option key={e.id} value={e.id}>{e.name}</option>); })}
                           </select>
                         </div>
 
                         <div>
                           <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Buscar por Texto</label>
-                          <input type="text" placeholder="Buscar en enunciados..." value={searchQuestionQuery} onChange={(e) => setSearchQuestionQuery(e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm"/>
+                          <input type="text" placeholder="Buscar en enunciados..." value={searchQuestionQuery} onChange={function (e) { return setSearchQuestionQuery(e.target.value); }} className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm"/>
                         </div>
                       </div>
 
                       {/* Tabla / Listado */}
                       {filteredAdminQuestions.length === 0 ? (<p className="text-center text-slate-400 py-12 italic text-sm">No se encontraron preguntas que coincidan con los criterios de búsqueda.</p>) : (<div className="space-y-4">
-                          {filteredAdminQuestions.map((q, idx) => {
-                            const parentExam = exams.find((e) => e.id === q.examId);
+                          {filteredAdminQuestions.map(function (q, idx) {
+                            var parentExam = exams.find(function (e) { return e.id === q.examId; });
                             return (<div key={q.id} className="p-4 border border-slate-200 rounded-2xl hover:border-slate-300 transition flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-50/50">
                                 <div className="flex-grow overflow-auto pr-4">
                                   <div className="flex items-center space-x-2.5 flex-wrap gap-y-1">
@@ -2701,21 +2719,21 @@ export default function App() {
                                 <div className="flex items-center space-x-2 flex-shrink-0 self-end md:self-center">
                                   
                                   {selectedAdminExamId !== 'all' && (<>
-                                      <button onClick={() => handleShiftQuestionOrder(idx, -1)} disabled={idx === 0} className={`p-1.5 rounded-lg border text-slate-500 hover:bg-slate-100 ${idx === 0 ? 'opacity-30 cursor-not-allowed' : ''}`} title="Subir posición">
+                                      <button onClick={function () { return handleShiftQuestionOrder(idx, -1); }} disabled={idx === 0} className={"p-1.5 rounded-lg border text-slate-500 hover:bg-slate-100 ".concat(idx === 0 ? 'opacity-30 cursor-not-allowed' : '')} title="Subir posición">
                                         ▲
                                       </button>
-                                      <button onClick={() => handleShiftQuestionOrder(idx, 1)} disabled={idx === filteredAdminQuestions.length - 1} className={`p-1.5 rounded-lg border text-slate-500 hover:bg-slate-100 ${idx === filteredAdminQuestions.length - 1 ? 'opacity-30 cursor-not-allowed' : ''}`} title="Bajar posición">
+                                      <button onClick={function () { return handleShiftQuestionOrder(idx, 1); }} disabled={idx === filteredAdminQuestions.length - 1} className={"p-1.5 rounded-lg border text-slate-500 hover:bg-slate-100 ".concat(idx === filteredAdminQuestions.length - 1 ? 'opacity-30 cursor-not-allowed' : '')} title="Bajar posición">
                                         ▼
                                       </button>
                                     </>)}
 
-                                  <button onClick={() => handleEditQuestion(q)} className="p-2 border border-slate-200 rounded-lg hover:bg-slate-100 text-slate-600 transition" title="Editar">
+                                  <button onClick={function () { return handleEditQuestion(q); }} className="p-2 border border-slate-200 rounded-lg hover:bg-slate-100 text-slate-600 transition" title="Editar">
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
                                     </svg>
                                   </button>
                                   
-                                  <button onClick={() => handleDeleteQuestion(q.id)} className="p-2 border border-slate-200 rounded-lg hover:bg-rose-50 hover:border-rose-200 text-rose-600 transition" title="Eliminar">
+                                  <button onClick={function () { return handleDeleteQuestion(q.id); }} className="p-2 border border-slate-200 rounded-lg hover:bg-rose-50 hover:border-rose-200 text-rose-600 transition" title="Eliminar">
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                     </svg>
@@ -2759,7 +2777,7 @@ export default function App() {
                         <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
                           {results.length === 0 ? (<tr>
                               <td colSpan={10} className="py-8 text-center text-slate-400 italic">No hay registros de datos aún.</td>
-                            </tr>) : (results.map((res) => (<tr key={res.id} className="hover:bg-slate-50 transition">
+                            </tr>) : (results.map(function (res) { return (<tr key={res.id} className="hover:bg-slate-50 transition">
                                 <td className="py-3 px-4 font-bold text-slate-900">{res.studentName}</td>
                                 <td className="py-3 px-4">{res.dni || '-'}</td>
                                 <td className="py-3 px-4">{res.phone || '-'}</td>
@@ -2772,13 +2790,13 @@ export default function App() {
                                 </td>
                                 <td className="py-3 px-4 text-right font-black text-violet-700">{res.score}{res.score !== 'N/A' ? ' pts' : ''}</td>
                                 <td className="py-3 px-4 text-center">
-                                  <button onClick={() => handleDeleteResult(res.id)} className="p-1.5 text-rose-600 hover:text-rose-800 hover:bg-rose-50 rounded-lg transition inline-flex items-center justify-center" title="Eliminar registro">
+                                  <button onClick={function () { return handleDeleteResult(res.id); }} className="p-1.5 text-rose-600 hover:text-rose-800 hover:bg-rose-50 rounded-lg transition inline-flex items-center justify-center" title="Eliminar registro">
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                     </svg>
                                   </button>
                                 </td>
-                              </tr>)))}
+                              </tr>); }))}
                         </tbody>
                       </table>
                     </div>
