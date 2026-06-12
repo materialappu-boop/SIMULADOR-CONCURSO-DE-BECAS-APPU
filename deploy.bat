@@ -19,7 +19,12 @@ if %ERRORLEVEL% neq 0 (
     echo [ERROR] Fallo en la transpilacion.
     exit /b %ERRORLEVEL%
 )
-echo [OK] Transpilacion exitosa (simulador_de_examen_appu.html e index.html generados).
+echo [OK] Transpilacion exitosa (index.html generado).
+echo.
+
+echo Limpiando archivos temporales...
+del /q simulador_de_examen_appu.jsx simulador_de_examen_appu.js simulador_de_examen_appu.html 2>nul
+echo [OK] Archivos temporales eliminados.
 echo.
 
 echo [3/3] Sincronizando con GitHub...

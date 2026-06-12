@@ -85,7 +85,7 @@ const defaultQuestions: Question[] = [
       E: "9"
     },
     correctOption: "C",
-    solutionText: "Analizando la relación operativa en cada triángulo entre los números de los extremos superiores y el número central:\\n- Primer triángulo: $\\\\frac{8 + 6}{2} = 7$\\n- Segundo triángulo: $\\\\frac{3 + 9}{2} = 6$\\n- Tercer triángulo: $\\\\frac{1 + 11}{2} = 6$\\n- Cuarto triángulo: $\\\\frac{2 + ?}{2} = 5 \\\\implies 2 + ? = 10 \\\\implies ? = 8$.\\nPor lo tanto, el número que falta es 8.",
+    solutionText: "",
     imageType: "none",
     imageUrl: "",
     solutionImageType: "none",
@@ -104,7 +104,7 @@ const defaultQuestions: Question[] = [
       E: "650"
     },
     correctOption: "D",
-    solutionText: "La serie se compone de fracciones cuyos denominadores son números primos entre sí consecutivos (números telescópicos):\\n$$\\\\frac{1}{1 \\\\cdot 2} + \\\\frac{1}{2 \\\\cdot 3} + \\\\frac{1}{3 \\\\cdot 4} + \\\\frac{1}{4 \\\\cdot 5} + \\\\dots + \\\\frac{1}{n(n+1)} = \\\\frac{24}{25}$$\\nPor propiedad de series telescópicas, la suma simplificada de los $n$ primeros términos es:\\n$$\\\\frac{n}{n+1} = \\\\frac{24}{25} \\\\implies n = 24$$\\nEl denominador del último término es $x = n(n+1)$:\\n$$x = 24 \\\\cdot (24 + 1) = 24 \\\\cdot 25 = 600$$",
+    solutionText: "",
     imageType: "none",
     imageUrl: "",
     solutionImageType: "none",
@@ -123,7 +123,7 @@ const defaultQuestions: Question[] = [
       E: "5 y 2"
     },
     correctOption: "B",
-    solutionText: "Analizando las caras adyacentes visibles en las tres posiciones del dado:\\n- Alrededor del número 2 vemos las caras: 1, 3, 4 y 6.\\n- Por descarte, la única cara que no puede ser adyacente al 2 es la que está opuesta a él, la cual debe ser el 5. Por lo tanto, el opuesto de 1 es 5.\\n- Alrededor del número 3 vemos las caras 2 y 5. Al analizar el giro entre las figuras, determinamos que la cara opuesta al 4 es el 2.\\nPor lo tanto, los números opuestos al 4 y al 1 son 2 y 5 respectivamente.",
+    solutionText: "",
     imageType: "none",
     imageUrl: "",
     solutionImageType: "none",
@@ -142,7 +142,7 @@ const defaultQuestions: Question[] = [
       E: "18"
     },
     correctOption: "E",
-    solutionText: "Planteamos la proporción inicial: $\\\\frac{V}{M} = \\\\frac{5}{9} \\\\implies V = 5k$ y $M = 9k$.\\nComo $M = \\\\overline{a1}$ termina en 1, el producto $9k$ debe terminar en 1, lo cual ocurre únicamente si $k$ termina en 9 ($k = 9, 19, \\dots$).\\n- Si $k = 9$: $V = 5(9) = 45$ (cumple la forma $\\\\overline{mn}$) y $M = 9(9) = 81$ (cumple la forma $\\\\overline{a1}$).\\nSi se retiran $x$ parejas, se van $x$ varones y $x$ mujeres. Al final, las mujeres representan el 70% del total (7 de cada 10):\\n$$\\\\frac{81 - x}{(45 - x) + (81 - x)} = \\\\frac{7}{10}$$\\n$$10(81 - x) = 7(126 - 2x) \\\\implies 810 - 10x = 882 - 14x$$\\n$$4x = 72 \\\\implies x = 18$$\\nPor lo tanto, deben retirarse 18 parejas.",
+    solutionText: "",
     imageType: "none",
     imageUrl: "",
     solutionImageType: "none",
@@ -161,7 +161,7 @@ const defaultQuestions: Question[] = [
       E: "95%"
     },
     correctOption: "E",
-    solutionText: "Usando diagramas de conjuntos para los lectores de diarios (Universo = 100%):\\n- Solo leen el diario A: $40\\\\% - 10\\\\% = 30\\\\%$\\n- Solo leen el diario B: $50\\\\% - 10\\\\% = 40\\\\%$\\n- Leen A o B: $30\\\\% + 40\\\\% + 10\\\\% = 80\\\\%$\\n- No leen ninguno de los dos diarios: $100\\\\% - 80\\\\% = 20\\\\%$.\\nDe este 20%, el 25% no sabe leer:\\n$$\\\\text{No saben leer} = 25\\\\% \\\\text{ de } 20\\\\% = 0.25 \\\\times 20\\\\% = 5\\\\%$$\\nPor lo tanto, el porcentaje de la población que sí sabe leer es:\\n$$\\\\text{Saben leer} = 100\\\\% - 5\\\\% = 95\\\\%$$",
+    solutionText: "",
     imageType: "none",
     imageUrl: "",
     solutionImageType: "none",
@@ -180,7 +180,7 @@ const defaultQuestions: Question[] = [
       E: "45"
     },
     correctOption: "C",
-    solutionText: "Sea el número $N = \\\\overline{7bcde}$. Por dato del problema:\\n$$\\\\overline{7bcde} = 45 \\\\times (7 \\\\cdot b \\\\cdot c \\\\cdot d \\\\cdot e)$$\\nComo $45$ es múltiplo de 5, $N$ debe terminar en 0 o 5. Pero si terminara en 0, el producto de sus cifras sería 0, haciendo que $N = 0$, lo cual es una contradicción. Por lo tanto, $e = 5$.\\nSustituyendo $e = 5$:\\n$$\\\\overline{7bcd5} = 45 \\\\times 7 \\\\times 5 \\\\times b \\\\times c \\\\times d = 1575 \\\\times (b \\cdot c \\cdot d)$$\\nEl número $N$ debe ser múltiplo de 9, por lo tanto, la suma de sus cifras ($7 + b + c + d + 5$) es múltiplo de 9. Probando los valores posibles para los dígitos intermedios que satisfagan la ecuación, encontramos el número $71125$.\\nLa suma de cifras del número buscado es $7 + 1 + 1 + 2 + 5 = 16$. Evaluando bajo las condiciones lógicas del problema, la respuesta correcta es 27.",
+    solutionText: "",
     imageType: "none",
     imageUrl: "",
     solutionImageType: "none",
@@ -199,7 +199,7 @@ const defaultQuestions: Question[] = [
       E: "24"
     },
     correctOption: "C",
-    solutionText: "Dividimos la condición inicial $x + y = 5xy$ entre $xy$:\\n$$\\\\frac{x}{xy} + \\\\frac{y}{xy} = 5 \\\\implies \\\\frac{1}{y} + \\\\frac{1}{x} = 5$$\\nElevando al cubo mediante la identidad de Cauchy para sumas recíprocas simétricas y despejando los términos correspondientes, el resultado numérico para la expresión pedida es 18.",
+    solutionText: "",
     imageType: "none",
     imageUrl: "",
     solutionImageType: "none",
@@ -218,7 +218,7 @@ const defaultQuestions: Question[] = [
       E: "1"
     },
     correctOption: "B",
-    solutionText: "Aplicamos la identidad de Legendre del numerador: $(A+B)^2 - (A-B)^2 = 4AB$.\\nAquí $A = n^m$ y $B = m^n$, por lo tanto, el numerador se reduce a $4 \\\\cdot n^m \\\\cdot m^n$.\\nAl operar y simplificar las leyes de exponentes en el denominador, las bases correspondientes se cancelan de manera homogénea con los términos algebraicos superiores, dejando como resultado la expresión $4mn$.",
+    solutionText: "",
     imageType: "none",
     imageUrl: "",
     solutionImageType: "none",
@@ -237,7 +237,7 @@ const defaultQuestions: Question[] = [
       E: "24"
     },
     correctOption: "A",
-    solutionText: "Observamos que el polinomio $P(x)$ contiene el desarrollo de un binomio al cubo incompleto:\\n$$P(x) = (x^3 + 3x^2 + 3x + 1) + 3 = (x + 1)^3 + 3$$\\nEvaluamos cada término de la expresión $M$:\\n1) Para $x = \\\\sqrt[3]{5} - 1$:\\n$$P(\\\\sqrt[3]{5} - 1) = ((\\\\sqrt[3]{5} - 1) + 1)^3 + 3 = 5 + 3 = 8$$\\n2) Para $x = \\\\sqrt[3]{7} - 1$:\\n$$P(\\\\sqrt[3]{7} - 1) = ((\\\\sqrt[3]{7} - 1) + 1)^3 + 3 = 7 + 3 = 10$$\\nFinalmente, calculamos $M = 8 + 10 = 18$.",
+    solutionText: "",
     imageType: "none",
     imageUrl: "",
     solutionImageType: "none",
@@ -256,7 +256,7 @@ const defaultQuestions: Question[] = [
       E: "26"
     },
     correctOption: "C",
-    solutionText: "Hacemos un cambio de variable. Sea $3^x = y$, lo que transforma la expresión en:\\n$$y^2 - 10 \\\\cdot (3^x \\\\cdot 3^1) + 81 = 0 \\\\implies y^2 - 30y + 81 = 0$$\\nFactorizando por aspa simple obtenemos $(y - 27)(y - 3) = 0$, de donde las raíces son $y_1 = 27$ y $y_2 = 3$.\\nRegresando a la base original:\\n- $3^{\\\\alpha} = 27 \\\\implies \\\\alpha = 3$\\n- $3^{\\\\beta} = 3 \\\\implies \\\\beta = 1$\\nCalculamos el valor pedido: $\\\\alpha^2 + \\\\beta^2 = 3^2 + 1^2 = 9 + 1 = 10$.",
+    solutionText: "",
     imageType: "none",
     imageUrl: "",
     solutionImageType: "none",
@@ -275,7 +275,7 @@ const defaultQuestions: Question[] = [
       E: "20°"
     },
     correctOption: "A",
-    solutionText: "Por propiedades de simetría y ángulos internos en figuras planas:\\n- El ángulo colindante $BCE = 90^\\\\circ + 60^\\\\circ = 150^\\\\circ$. Al ser el triángulo BCE isósceles ($BC=CE$), sus ángulos agudos valen $15^\\\\circ$.\\n- Analizando las sumas angulares sobre las diagonales del cuadrado y el punto de intersección D, hallamos los valores de las incógnitas: $x = 75^\\\\circ$ y $y = 60^\\circ$.\\nRestando obtenemos: $x - y = 75^\\circ - 60^\\circ = 15^\\circ$.",
+    solutionText: "",
     imageType: "none",
     imageUrl: "",
     solutionImageType: "none",
@@ -294,7 +294,7 @@ const defaultQuestions: Question[] = [
       E: "64 cm²"
     },
     correctOption: "A",
-    solutionText: "Los cuatro triángulos rectángulos son congruentes y están distribuidos simétricamente. Calculando las longitudes de sus catetos a partir de las dimensiones del rectángulo contenedor ($28\\\\text{ cm}$ y $30\\\\text{ cm}$), se determina que el área sombreada acumulada de las cuatro regiones es igual a $112\\\\text{ cm}^2$.",
+    solutionText: "",
     imageType: "none",
     imageUrl: "",
     solutionImageType: "none",
@@ -313,7 +313,7 @@ const defaultQuestions: Question[] = [
       E: "48 U²"
     },
     correctOption: "A",
-    solutionText: "El área del trapecio se define como $A = \\\\frac{(B + b) \\\\cdot h}{2}$. Sabiendo que $B = 6$, $b = 4$ y $A = 50$:\\n$$50 = \\\\frac{(6 + 4) \\\\cdot h}{2} \\\\implies 50 = 5h \\\\implies h = 10\\\\text{ u}$$\\nEl triángulo sombreado ACD comparte la misma base mayor $B = 6$ y la misma altura $h = 10$:\\n$$\\\\text{Área}_{\\\\triangle} = \\\\frac{6 \\\\cdot 10}{2} = 30\\\\text{ u}^2$$",
+    solutionText: "",
     imageType: "none",
     imageUrl: "",
     solutionImageType: "none",
@@ -332,7 +332,7 @@ const defaultQuestions: Question[] = [
       E: "11,56"
     },
     correctOption: "D",
-    solutionText: "En el IV cuadrante, el seno y la tangente son negativos, mientras que la secante es positiva. Por Pitágoras, con cateto adyacente = 24 e hipotenusa = 25, el cateto opuesto es 7. Reemplazamos los valores correspondientes:\\n$$\\\\operatorname{sen}(\\\\beta) = -\\\\frac{7}{25}, \\\\quad \\\\tan(\\\\beta) = -\\\\frac{7}{24}, \\\\quad \\\\sec(\\\\beta) = \\\\frac{25}{24}$$\\nSustituyendo en $V$:\\n$$V = 5\\\\left(-\\\\frac{7}{25}\\\\right) + 6\\\\left(-\\\\frac{7}{24}\\\\right) + 12\\\\left(\\\\frac{25}{24}\\\\right) = -\\\\frac{7}{5} - \\\\frac{7}{4} + \\\\frac{25}{2} = 9.35$$",
+    solutionText: "",
     imageType: "none",
     imageUrl: "",
     solutionImageType: "none",
@@ -351,7 +351,7 @@ const defaultQuestions: Question[] = [
       E: "\\sqrt{3}"
     },
     correctOption: "A",
-    solutionText: "Usando el triángulo del ángulo de depresión de $30^\\\\circ$, la distancia horizontal $D$ entre la academia y la torre está dada por: $D = 3h \\\\cdot \\\\cot(30^\\circ) = 3h\\\\sqrt{3}$.\\nLa altura de la torre que sobresale por encima de la academia es $5h - 3h = 2h$. Para el ángulo de elevación $\\\\alpha$:\\n$$\\\\cot(\\\\alpha) = \\\\frac{\\\\text{Distancia Horizontal}}{\\\\text{Altura Relativa}} = \\\\frac{3h\\\\sqrt{3}}{2h} = \\\\frac{3\\\\sqrt{3}}{2}$$",
+    solutionText: "",
     imageType: "none",
     imageUrl: "",
     solutionImageType: "none",
@@ -370,7 +370,7 @@ const defaultQuestions: Question[] = [
       E: "0.5"
     },
     correctOption: "B",
-    solutionText: "Por relaciones trigonométricas en un sector circular de $60^\\\\circ$, la distancia desde el origen al centro del círculo inscrito de radio $r$ es $2r$. El radio mayor del sector es $R = 2r + r = 3r$. Como $R = 3\\\\text{u}$, entonces $3r = 3 \\\\implies r = 1\\\\text{u}$.\\nEl área del círculo inscrito es $A = \\\\pi \\\\cdot r^2 = \\\\pi \\\\cdot (1)^2 = \\\\pi$.",
+    solutionText: "",
     imageType: "none",
     imageUrl: "",
     solutionImageType: "none",
