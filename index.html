@@ -1170,6 +1170,14 @@ function App() {
         document.getElementById('question-form-section')?.scrollIntoView({ behavior: 'smooth' });
         triggerMathJax();
     };
+    const handleCleanOrphanQuestions = async () => {
+        confirmAction("¿Limpiar Preguntas Huérfanas?", "Se eliminarán permanentemente todas las preguntas que no estén asignadas a ningún examen. Esta acción no se puede deshacer.", async () => {
+            const updatedQuestions = questions.filter(q => !!q.examId);
+            setQuestions(updatedQuestions);
+            await saveKVData('questions', updatedQuestions);
+            showToast(`Se han eliminado ${questions.length - updatedQuestions.length} preguntas huérfanas.`, "success");
+        });
+    };
     const handleDeleteQuestion = async (qId) => {
         confirmAction("¿Eliminar Pregunta?", "Esta acción es irreversible y eliminará la pregunta del simulacro.", async () => {
             const updatedQuestions = questions.filter(q => q.id !== qId);
@@ -2745,9 +2753,14 @@ function App() {
 
                     {/* Banco General de Preguntas - Lista de búsqueda y control */}
                     <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-                      <div className="border-b border-slate-150 pb-4 mb-6">
-                        <h3 className="text-xl font-bold text-slate-800">Banco de Preguntas Registradas</h3>
-                        <p className="text-xs text-slate-400 mt-1">Busca, edita, ordena y elimina preguntas cargadas.</p>
+                      <div className="border-b border-slate-150 pb-4 mb-6 flex justify-between items-start">
+                        <div>
+                          <h3 className="text-xl font-bold text-slate-800">Banco de Preguntas Registradas</h3>
+                          <p className="text-xs text-slate-400 mt-1">Busca, edita, ordena y elimina preguntas cargadas.</p>
+                        </div>
+                        <button onClick={handleCleanOrphanQuestions} className="px-3 py-2 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-100 transition text-sm font-semibold flex items-center space-x-2" title="Eliminar preguntas sin examen asignado">
+                          <span>🗑️ Limpiar huérfanas</span>
+                        </button>
                       </div>
 
                       {/* Buscador y Filtrado */}
