@@ -1760,7 +1760,7 @@ export default function App() {
                           </div>
                           <div>
                             <p className="text-[10px] text-blue-200 uppercase font-bold tracking-wider leading-none">RECUERDA</p>
-                            <p className="text-xs font-extrabold text-white mt-1 leading-tight">Traer lápiz y borrador</p>
+                            <p className="text-xs font-extrabold text-white mt-1 leading-tight">Traer lápiz y DNI</p>
                           </div>
                         </div>
                       </div>
